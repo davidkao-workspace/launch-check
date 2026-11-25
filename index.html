@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>新品上市體檢</title>
+<meta name="description" content="填幾個數字，60 秒看出這個新品賺不賺、要先墊多少錢、幾個月回本。優曝數位行銷 Upsell Ecommerce Studio。">
+<style>
+  /* 版面：開場置中，接著左邊填數字、右邊看結果，往下是四個數字、每賣一台的圖、鎖住的六塊與預約。只做深色，照優曝網站的暖炭灰、珊瑚粉、米白 */
+  :root{
+    color-scheme:dark;
+    --bg:#2b2f31; --bg2:#232729; --card:#353b3d; --line:rgba(255,250,244,.12); --line2:#7d8486;
+    --txt:#fffaf4; --sub:#c6c0b9; --mut:#a3a8a8; --accent:#e8a094; --accent2:#fb9483; --ink:#2b2f31;
+    --good:#7ad3a0; --warn:#f2c66d; --bad:#ff6b7d; --tone:var(--accent2);
+    --r:18px; --sans:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --latin:"Fira Sans","Avenir Next","Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none !important}
+  html{scroll-behavior:smooth}
+  body{margin:0;color:var(--txt);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;
+    background:radial-gradient(1100px 620px at 88% -8%,rgba(251,148,131,.20),transparent 62%),radial-gradient(900px 560px at -12% 22%,rgba(232,160,148,.10),transparent 60%),var(--bg);background-attachment:fixed}
+  .wrap{max-width:1120px;margin:0 auto;padding-block:0 120px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  a{color:inherit}
+  .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+
+  /* 頁首 */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 0}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .brand img{width:36px;height:32px;display:block}
+  .wordmark{font-family:var(--latin);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+  .brand small{display:block;font-size:11.5px;color:var(--sub);letter-spacing:.12em}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:11px 20px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none;border:1px solid var(--line2);background:transparent;color:var(--txt);transition:transform .15s,box-shadow .2s,background .2s,border-color .2s}
+  .btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .btn.primary{border:0;color:var(--ink);background:linear-gradient(135deg,var(--accent2),var(--accent));box-shadow:0 8px 28px rgba(251,148,131,.35)}
+  .btn.primary:hover{box-shadow:0 12px 36px rgba(251,148,131,.5)}
+  .btn.sm{padding:8px 14px;font-size:13.5px}
+  .btn:focus-visible,.seg button:focus-visible,.chip:focus-visible,.lock:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+
+  /* 開場 */
+  .hero{padding:26px 0 8px;text-align:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--accent);border:1px solid rgba(232,160,148,.45);border-radius:999px;padding:5px 14px;background:rgba(232,160,148,.08)}
+  .eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--accent2);box-shadow:0 0 0 0 rgba(251,148,131,.7);animation:ping 2s infinite}
+  @keyframes ping{70%{box-shadow:0 0 0 9px rgba(251,148,131,0)}100%{box-shadow:0 0 0 0 rgba(251,148,131,0)}}
+  h1{font-size:clamp(34px,6.4vw,62px);line-height:1.18;margin:16px 0 10px;font-weight:800;letter-spacing:.01em}
+  h1 em{font-style:normal;white-space:nowrap;background:linear-gradient(120deg,var(--accent2),#ffd0c4 55%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{color:var(--sub);font-size:clamp(16px,2vw,19px);max-width:30em;margin:0 auto 20px;text-wrap:balance}
+  .trust{color:var(--mut);font-size:12.5px;margin:14px 0 0}
+  .seg{display:inline-flex;padding:5px;border-radius:999px;background:rgba(0,0,0,.28);border:1px solid var(--line);gap:4px}
+  .seg button{border:0;border-radius:999px;padding:10px 22px;font:inherit;font-weight:700;font-size:15px;color:var(--sub);background:transparent;cursor:pointer;transition:all .2s}
+  .seg button[aria-pressed="true"]{color:var(--ink);background:linear-gradient(135deg,var(--accent2),var(--accent));box-shadow:0 6px 20px rgba(251,148,131,.35)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0 0;align-items:center}
+  .chips span{color:var(--mut);font-size:13.5px}
+  .chip{border:1px solid var(--line);background:rgba(255,250,244,.05);color:var(--txt);border-radius:999px;padding:6px 14px;font:inherit;font-size:13.5px;cursor:pointer;transition:all .15s}
+  .chip:hover,.chip[aria-pressed="true"]{border-color:var(--accent);background:rgba(232,160,148,.14)}
+
+  /* 卡片 */
+  .card{background:linear-gradient(180deg,rgba(255,250,244,.07),rgba(255,250,244,.025));border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.22)}
+  .card h2,.sec h2{font-size:20px;margin:0 0 4px;font-weight:800}
+  .card .hint,.sec .hint{color:var(--mut);font-size:13.5px;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:18px;margin-top:26px;align-items:start}
+  .sec{margin-top:44px}
+
+  /* 輸入 */
+  .f{margin:0 0 15px}
+  .f:last-child{margin-bottom:0}
+  .f .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .f label{font-weight:700;font-size:14.5px}
+  .f small{display:block;color:var(--mut);font-size:12.5px;line-height:1.5;margin-top:1px}
+  .box{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:10px;padding:5px 10px;flex:0 0 168px}
+  .f .row>div:first-child{min-width:0}
+  .box span{color:var(--mut);font-size:13px;white-space:nowrap}
+  .box input{width:100%;min-width:0;border:0;background:transparent;color:var(--txt);font:inherit;font-weight:700;font-size:17px;text-align:right;padding:2px 0;-moz-appearance:textfield}
+  .box input::-webkit-outer-spin-button,.box input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  select{width:100%;margin-top:7px;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:10px;color:var(--txt);font:inherit;font-weight:700;font-size:15px;padding:10px 12px}
+  input[type=range]{width:100%;margin:9px 0 0;accent-color:var(--accent2);height:22px;cursor:pointer}
+
+  /* 結果 */
+  .result{position:relative;overflow:hidden}
+  .result::before{content:"";position:absolute;inset:-40% -20% auto auto;width:420px;height:420px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--tone) 34%,transparent),transparent);filter:blur(10px);pointer-events:none;transition:background .5s}
+  .verdict{display:flex;gap:20px;align-items:center;position:relative}
+  .ring{position:relative;flex:none;width:168px;height:168px}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring .trk{fill:none;stroke:rgba(255,250,244,.10);stroke-width:12}
+  .ring .arc{fill:none;stroke:var(--tone);stroke-width:12;stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:440;transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1),stroke .4s}
+  .ring::before{content:"";position:absolute;inset:12px;border-radius:50%;box-shadow:0 0 36px 4px color-mix(in srgb,var(--tone) 42%,transparent);transition:box-shadow .5s}
+  .ring .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring b{font-size:52px;line-height:1;font-weight:800;font-family:var(--latin)}
+  .ring span{font-size:12px;color:var(--mut);letter-spacing:.1em;margin-top:4px}
+  .vtext .tag{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:15px;color:var(--ink);background:var(--tone);border-radius:999px;padding:4px 14px;transition:background .4s}
+  .vtext h3{font-size:clamp(24px,3.2vw,32px);line-height:1.25;margin:10px 0 6px;font-weight:800}
+  .vtext p{margin:0;color:var(--sub);font-size:14.5px}
+  .ins{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:9px;position:relative}
+  .ins li{display:flex;gap:10px;align-items:flex-start;background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:14.5px;line-height:1.6}
+  .ins li i{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800;color:var(--ink);background:var(--accent);margin-top:2px}
+  .ins li.lever{border-color:rgba(232,160,148,.55);background:rgba(232,160,148,.10)}
+  .more{display:inline-flex;align-items:center;gap:6px;margin-left:6px;font-size:12.5px;font-weight:700;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;font-family:inherit;text-decoration:underline;text-underline-offset:3px}
+
+  /* 四個數字 */
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:18px}
+  .kpi{background:linear-gradient(180deg,rgba(255,250,244,.07),rgba(255,250,244,.025));border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+  .kpi .l{font-size:13px;color:var(--mut);font-weight:700}
+  .kpi .v{font-size:clamp(22px,2.6vw,30px);font-weight:800;line-height:1.3;margin-top:4px;font-family:var(--latin)}
+  .kpi .s{font-size:12.5px;color:var(--sub);margin-top:2px}
+  .pos{color:var(--good)} .neg{color:var(--bad)}
+
+  /* 每賣一台錢去哪了 */
+  .wf{display:grid;gap:7px;margin-top:6px}
+  .wf .r{display:grid;grid-template-columns:8.5em minmax(0,1fr) 6.5em;gap:10px;align-items:center;font-size:14px}
+  .wf .r .n{color:var(--sub)}
+  .wf .r .t{position:relative;height:22px;border-radius:6px;background:rgba(255,250,244,.05)}
+  .wf .r .t i{position:absolute;top:0;bottom:0;border-radius:5px;background:rgba(255,250,244,.34);min-width:2px;transition:left .5s,width .5s}
+  .wf .r.sum .t i{background:var(--txt)}
+  .wf .r.end .t i{background:var(--good)} .wf .r.end.bad .t i{background:var(--bad)}
+  .wf .r .a{text-align:right;font-weight:700}
+  .wf .r.end .n,.wf .r.sum .n{color:var(--txt);font-weight:700}
+  .wfnote{color:var(--mut);font-size:12.5px;margin:12px 0 0}
+  /* 廣告預算大項與每季回款：兩張並排的卡片 */
+  .duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:18px}
+  .duo .card{display:flex;flex-direction:column}
+  .duo .pill{align-self:flex-start}
+  .pl{display:grid;gap:11px;margin-top:14px}
+  .pl .r{display:grid;grid-template-columns:8.6em minmax(0,1fr) 6.6em;gap:10px;align-items:center;font-size:14px}
+  .pl .n{color:var(--txt);font-weight:700;line-height:1.35} .pl .n small{display:block;color:var(--mut);font-size:12px;font-weight:400}
+  .pl .t{position:relative;height:16px;border-radius:8px;background:rgba(0,0,0,.30);overflow:hidden}
+  .pl .t i{position:absolute;left:0;top:0;bottom:0;border-radius:8px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .35s}
+  .pl .a{text-align:right;font-weight:800;font-family:var(--latin);line-height:1.35} .pl .a small{display:block;color:var(--mut);font-weight:400;font-size:12px;font-family:var(--sans)}
+  .pl.q .t{height:26px} .pl.q .t i{top:4px;bottom:auto;height:8px} .pl.q .t i.lo{top:14px;background:var(--txt);opacity:.9}
+  .pl.q .t u{position:absolute;top:0;bottom:0;width:2px;background:var(--good)}
+  .lg2{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin-top:12px}
+  .lg2 i{display:inline-block;width:16px;height:6px;border-radius:3px;vertical-align:middle;margin-right:6px}
+  .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+  .facts div{background:rgba(0,0,0,.24);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+  .facts small{display:block;color:var(--mut);font-size:12px;font-weight:700} .facts b{display:block;font-family:var(--latin);font-size:16.5px;font-weight:800} .facts span{display:block;color:var(--mut);font-size:12px}
+  .duo .more{margin:14px 0 0;align-self:flex-start;text-align:left}
+  .duo .wfnote{flex:1}
+
+  /* 完整版才有的 */
+  .locks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:16px}
+  .lock{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;position:relative;text-align:left;font:inherit;color:inherit;cursor:pointer;overflow:hidden;background:linear-gradient(180deg,rgba(255,250,244,.06),rgba(255,250,244,.02));border:1px solid var(--line);border-radius:16px;padding:16px 16px 14px;transition:transform .18s,border-color .2s,box-shadow .2s}
+  .lock:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+  .lock .pv{height:96px;border-radius:10px;background:rgba(0,0,0,.28);padding:12px;display:flex;gap:7px;align-items:flex-end;filter:blur(5px);opacity:.85;pointer-events:none}
+  .lock .pv b{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--accent2),rgba(232,160,148,.35))}
+  .lock .pv.rows{flex-direction:column;align-items:stretch;justify-content:center;gap:8px}
+  .lock .pv.rows b{flex:none;height:10px;border-radius:5px}
+  .lock .pv.gt{gap:7px} .lock .pv.gt b{height:9px}
+  .lock .pv.line{align-items:stretch;padding:8px}
+  .lock .pv.line svg{width:100%;height:100%}
+  .lock .badge{position:absolute;top:44px;left:50%;transform:translateX(-50%);display:inline-flex;gap:6px;align-items:center;white-space:nowrap;font-size:12.5px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,var(--accent2),var(--accent));border-radius:999px;padding:5px 12px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+  .lock h3{font-size:16px;margin:13px 0 3px;font-weight:800}
+  .lock p{margin:0;color:var(--sub);font-size:13.5px;line-height:1.6}
+
+  /* 範例報告 */
+  .pill{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:.1em;color:var(--ink);background:linear-gradient(135deg,var(--accent2),var(--accent));border-radius:999px;padding:3px 12px;margin-bottom:8px}
+  .spk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0 4px}
+  .spk div{background:rgba(0,0,0,.24);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .spk small{display:block;color:var(--mut);font-size:12px;font-weight:700}
+  .spk b{font-size:19px;font-family:var(--latin);font-weight:800}
+  .tabs{display:flex;gap:6px;overflow-x:auto;margin:16px 0 12px;padding-bottom:4px;scrollbar-width:thin}
+  .tabs button{flex:none;border:1px solid var(--line);background:rgba(255,250,244,.04);color:var(--sub);border-radius:999px;padding:8px 15px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .tabs button:hover{border-color:var(--accent)}
+  .tabs button[aria-selected="true"]{color:var(--ink);background:var(--txt);border-color:var(--txt)}
+  .tabs button:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+  .say{background:rgba(232,160,148,.10);border:1px solid rgba(232,160,148,.45);border-radius:12px;padding:11px 14px;font-size:14.5px;line-height:1.7;margin:0 0 12px}
+  .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+  table.rp{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px;min-width:560px}
+  .rp th,.rp td{padding:9px 11px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+  .rp th{font-size:12px;color:var(--mut);font-weight:700;background:rgba(0,0,0,.30)}
+  .rp th:first-child,.rp td:first-child{text-align:left;font-weight:700;color:var(--txt)}
+  .rp td{color:var(--sub)}
+  .rp td.l,.rp th.l{text-align:left} .rp td.w{white-space:normal;min-width:15em}
+  .rp tbody tr:nth-child(even) td{background:rgba(255,250,244,.03)}
+  .rp tr.key td{background:rgba(232,160,148,.12);color:var(--txt);font-weight:800}
+  .rp tr.sum td{background:rgba(0,0,0,.26);color:var(--txt);font-weight:800}
+  .rp tr:last-child td{border-bottom:0}
+  .rp .grp{text-align:center;border-left:1px solid var(--line)} .rp .bl{border-left:1px solid var(--line)}
+  .rp .mut{color:var(--mut)} .rp b{color:var(--txt)}
+  .tg{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:1px 9px;margin-left:6px;line-height:1.7}
+  .tg.ok{color:var(--good);background:rgba(122,211,160,.14)} .tg.no{color:var(--bad);background:rgba(255,107,125,.14)} .tg.wn{color:var(--warn);background:rgba(242,198,109,.14)} .tg.mu{color:var(--mut);background:rgba(255,250,244,.08)} .tg.in{color:var(--ink);background:var(--accent)}
+  /* 範例報告的 GTM 甘特圖：一列一件事、一欄一個月 */
+  .rp.gt th,.rp.gt td{padding:6px 0;text-align:center;min-width:46px}
+  .rp.gt th:first-child,.rp.gt td:first-child{padding:8px 11px;min-width:176px;text-align:left}
+  .rp.gt tr.grp td{background:rgba(0,0,0,.30);color:var(--mut);font-size:12px;font-weight:800;letter-spacing:.08em;text-align:left;padding:6px 11px}
+  .rp.gt td i{display:block;height:22px;line-height:22px;font-style:normal;font-size:11.5px;font-weight:800;color:var(--ink);white-space:nowrap}
+  .rp.gt td.a i{border-radius:11px 0 0 11px;margin-left:3px} .rp.gt td.z i{border-radius:0 11px 11px 0;margin-right:3px} .rp.gt td.a.z i{border-radius:11px}
+  .gt .buy i{background:var(--accent2)} .gt .fix i{background:var(--warn)} .gt .ramp i{background:rgba(122,211,160,.45)} .gt .on i{background:var(--good)}
+  .gt .res i{background:transparent;color:var(--bad);box-shadow:inset 0 0 0 2px var(--bad)} .gt .res.ok i{color:var(--good);box-shadow:inset 0 0 0 2px var(--good)}
+  .rp.gt th.now{color:var(--txt);box-shadow:inset 0 -3px 0 var(--good)}
+  .rp .sm{color:var(--mut);font-weight:400;font-size:12px;margin-left:6px}
+  .gkey{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);margin:10px 2px 0}
+  .gkey i{display:inline-block;width:22px;height:10px;border-radius:5px;vertical-align:middle;margin-right:6px}
+  .bar.g{background:var(--good)} .bar.p{background:var(--accent2)}
+  h4.sub{font-size:14px;margin:16px 0 8px;color:var(--sub);font-weight:800}
+  .bar{display:inline-block;height:9px;border-radius:5px;vertical-align:middle;margin-right:8px;min-width:2px}
+  .bar.r{background:var(--bad)} .bar.y{background:var(--warn)}
+  .chart{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:12px;padding:10px 8px 4px;margin:0 0 12px}
+  .chart svg{display:block;width:100%;height:auto}
+  .chart .lg{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--sub);padding:0 6px 6px}
+  .chart .lg i{display:inline-block;width:16px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  .spfoot{color:var(--mut);font-size:13px;margin:14px 0 0}
+  .spfoot a{color:var(--accent);font-weight:700}
+
+  /* 比較 */
+  .cmp{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px;margin-top:14px}
+  .cmp th,.cmp td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:center}
+  .cmp th:first-child,.cmp td:first-child{text-align:left}
+  .cmp thead th{font-size:13px;color:var(--mut);font-weight:700}
+  .cmp thead th:last-child{color:var(--accent)}
+  .cmp td:last-child{background:rgba(232,160,148,.08)}
+  .cmp tr:last-child td{border-bottom:0}
+  .yes{color:var(--good);font-weight:800} .no{color:var(--mut)}
+
+  /* 收尾 */
+  .cta{margin-top:44px;text-align:center;padding:40px 22px;border-radius:24px;border:1px solid rgba(232,160,148,.45);background:radial-gradient(700px 300px at 50% 0%,rgba(251,148,131,.22),transparent 70%),rgba(255,250,244,.04)}
+  .cta h2{font-size:clamp(24px,3.6vw,36px);margin:0 0 8px;font-weight:800}
+  .cta p{color:var(--sub);max-width:36em;margin:0 auto 20px}
+  .cta .acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .todo{display:block;margin-top:12px;font-size:12.5px;color:var(--warn)}
+  footer{margin-top:36px;color:var(--mut);font-size:12.5px;text-align:center;line-height:1.8}
+  .float{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;justify-content:center;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(180deg,transparent,rgba(35,39,41,.92) 40%);pointer-events:none}
+  .float .btn{pointer-events:auto}
+  .dlg{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:20px;background:rgba(20,22,23,.72);backdrop-filter:blur(6px)}
+  .dlg[hidden]{display:none}
+  .dlg .in{max-width:440px;width:100%;background:var(--card);border:1px solid rgba(232,160,148,.5);border-radius:20px;padding:26px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .dlg h3{font-size:22px;margin:8px 0 6px}
+  .dlg p{color:var(--sub);margin:0 0 18px;font-size:15px}
+  .dlg .acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  /* 掃這個 QR 打開這個頁面：開場一個（寬螢幕、投影用）、最下面一個；點了會放大 */
+  .scan{display:inline-flex;align-items:center;gap:14px;margin:18px auto 0;padding:10px 18px 10px 10px;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.24);text-align:left;font:inherit;color:inherit;cursor:zoom-in;transition:border-color .2s,transform .15s}
+  .scan:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .scan .qr{display:block;width:112px;max-width:none;margin:0;border-radius:10px;box-shadow:none;flex:none}
+  .scan .tx{display:block} .scan .tx b{display:block;font-size:15.5px;font-weight:800} .scan .tx span{display:block;color:var(--sub);font-size:13px}
+  .scan .tx code{display:block;color:var(--mut);font-size:11.5px;font-family:var(--latin);margin-top:5px;word-break:break-all;max-width:250px}
+  #big .in{max-width:min(92vw,560px)} #big .qr{width:min(64vh,440px);max-width:100%;margin-bottom:16px} #big code{display:block;color:var(--sub);font-family:var(--latin);font-size:14px;word-break:break-all;margin:0 0 16px}
+  .takebar{position:relative;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px}
+  .takebar span{color:var(--mut);font-size:13px}
+  .qr{width:208px;max-width:72%;margin:4px auto 14px;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .qr svg{display:block;width:100%;height:auto}
+  .tklink{display:flex;gap:8px;margin:0 0 16px}
+  .tklink input{flex:1;min-width:0;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:999px;color:var(--sub);font:inherit;font-size:12.5px;padding:8px 14px}
+  #tk .in{max-width:480px} #tk .acts .btn{padding:10px 16px;font-size:14px}
+  .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:50;background:var(--txt);color:var(--ink);font-weight:700;font-size:14px;border-radius:999px;padding:9px 18px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  .toast[hidden]{display:none}
+
+  @media (max-width:860px){
+    .grid{grid-template-columns:1fr} .duo{grid-template-columns:1fr} .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} .locks{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .top .btn{display:none} .spk{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:520px){
+    .wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))} .card{padding:18px} .verdict{flex-direction:column;text-align:center} .locks{grid-template-columns:1fr} #scan{display:none} .rp.gt th:first-child,.rp.gt td:first-child{min-width:124px;white-space:normal} .rp.gt td .sm{display:block;margin-left:0}
+    .wf .r{grid-template-columns:6.2em minmax(0,1fr) 5.4em;font-size:13px} .pl .r{grid-template-columns:6.4em minmax(0,1fr) 5.6em;font-size:13px}
+    .facts{grid-template-columns:1fr} .facts div{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px} .facts b{flex:1;text-align:right;font-size:15.5px} .facts span{flex-basis:100%;text-align:right} .box{flex-basis:138px} .seg button{padding:9px 16px;font-size:14px}
+  }
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top" aria-label="優曝數位行銷 Upsell Ecommerce Studio">
+      <img src="data:image/png;base64,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" alt="" width="36" height="32">
+      <span><span class="wordmark">Upsell Ecommerce Studio</span><small>優曝數位行銷</small></span>
+    </a>
+    <a class="btn sm" href="#full">完整版能做什麼</a>
+  </header>
+
+  <section class="hero" id="top">
+    <span class="eyebrow"><i></i>新品上市 60 秒體檢</span>
+    <h1>這個新品，<em>能不能做？</em></h1>
+    <p class="lead">填幾個數字，馬上看到賺不賺、要先墊多少錢、廣告要抓多少、錢什麼時候回來。下單之前先算一次。</p>
+    <div class="seg" role="group" aria-label="你要在哪裡賣">
+      <button type="button" id="m-tw" aria-pressed="true">台灣通路</button>
+      <button type="button" id="m-amz" aria-pressed="false">亞馬遜 FBA</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <p class="trust">不用註冊。你填的數字只留在這個瀏覽器裡，不會傳出去。</p>
+    <button type="button" class="scan" id="scan" hidden><span class="qr"></span><span class="tx"><b>用手機掃，自己算一次</b><span>打開就能填你的數字，點一下可以放大</span><code></code></span></button>
+  </section>
+
+  <main class="grid">
+    <section class="card" aria-labelledby="h-in">
+      <h2 id="h-in">你的數字</h2>
+      <p class="hint">拉一拉看結果怎麼變。不確定的先用範例的數字。</p>
+      <form id="form" onsubmit="return false"></form>
+    </section>
+
+    <section class="card result" aria-labelledby="h-out" aria-live="polite">
+      <h2 id="h-out" style="position:relative">體檢結果</h2>
+      <p class="hint" style="position:relative">樂觀＝照你填的量賣；保守＝只賣到六成、廣告多花 5%。</p>
+      <div class="verdict">
+        <div class="ring">
+          <svg viewBox="0 0 160 160" aria-hidden="true"><circle class="trk" cx="80" cy="80" r="70"/><circle class="arc" id="arc" cx="80" cy="80" r="70"/></svg>
+          <div class="mid"><b class="num" id="score">0</b><span>上市分數</span></div>
+        </div>
+        <div class="vtext">
+          <span class="tag" id="v-tag"></span>
+          <h3 id="v-title"></h3>
+          <p id="v-sub"></p>
+        </div>
+      </div>
+      <ul class="ins" id="ins"></ul>
+      <div class="takebar"><button class="btn primary" type="button" id="take">帶走我的結果</button><span>掃 QR 帶到手機，或傳給合夥人一起看</span></div>
+    </section>
+  </main>
+
+  <section class="kpis" aria-label="四個關鍵數字">
+    <div class="kpi"><div class="l">樂觀能賺</div><div class="v num" id="k-hi"></div><div class="s" id="k-hi-s"></div></div>
+    <div class="kpi"><div class="l">保守能賺</div><div class="v num" id="k-lo"></div><div class="s" id="k-lo-s"></div></div>
+    <div class="kpi"><div class="l">下單要先拿出</div><div class="v num" id="k-adv"></div><div class="s" id="k-adv-s"></div></div>
+    <div class="kpi"><div class="l">幾個月回本</div><div class="v num" id="k-pay"></div><div class="s" id="k-pay-s"></div></div>
+  </section>
+
+  <section class="card sec" aria-labelledby="h-wf">
+    <h2 id="h-wf"><span id="wf-title">每賣一台，錢去哪了</span></h2>
+    <p class="hint" id="wf-hint"></p>
+    <div class="wf" id="wf"></div>
+    <p class="wfnote" id="wf-note"></p>
+  </section>
+
+  <div class="duo">
+    <section class="card" aria-labelledby="h-ad">
+      <span class="pill">大項</span>
+      <h2 id="h-ad">廣告預算規劃</h2>
+      <p class="hint" id="ad-hint"></p>
+      <div class="pl" id="ad-rows"></div>
+      <div class="facts" id="ad-facts"></div>
+      <p class="wfnote" id="ad-note"></p>
+      <button type="button" class="more" data-lock="1" id="ad-more"></button>
+    </section>
+    <section class="card" aria-labelledby="h-pay">
+      <span class="pill">每季</span>
+      <h2 id="h-pay">財務回款推算</h2>
+      <p class="hint" id="pay-hint"></p>
+      <div class="lg2"><span><i style="background:var(--accent2)"></i>樂觀</span><span><i style="background:var(--txt)"></i>保守</span><span><i style="background:var(--good);width:3px;height:14px"></i>回本線</span></div>
+      <div class="pl q" id="pay-rows"></div>
+      <div class="facts" id="pay-facts"></div>
+      <p class="wfnote" id="pay-note"></p>
+      <button type="button" class="more" data-lock="3" id="pay-more">每個月付多少、收多少的現金表，在完整版 →</button>
+    </section>
+  </div>
+
+  <section class="sec" aria-labelledby="h-lock">
+    <h2 id="h-lock">完整版還會告訴你</h2>
+    <p class="hint">下面每一塊，都用你的報價單與通路條件實際算。</p>
+    <div class="locks" id="locks"></div>
+  </section>
+
+  <section class="card sec" id="sample" aria-labelledby="h-sp">
+    <span class="pill">範例報告</span>
+    <h2 id="h-sp">完整版長這樣</h2>
+    <p class="hint" id="sp-intro"></p>
+    <div class="spk" id="sp-kpis"></div>
+    <div class="tabs" role="tablist" aria-label="範例報告的八個部分" id="sp-tabs"></div>
+    <div id="sp-body" role="tabpanel"></div>
+    <p class="spfoot">換成你的品，每一格都用你的報價單與通路條件算。<a href="#contact">預約完整版規劃</a></p>
+  </section>
+
+  <section class="card sec" id="full" aria-labelledby="h-cmp">
+    <h2 id="h-cmp">簡易版與完整版差在哪</h2>
+    <p class="hint">簡易版讓你 60 秒知道值不值得往下看；完整版是下單前把每個數字對清楚。</p>
+    <table class="cmp">
+      <thead><tr><th>可以看到</th><th>簡易版</th><th>完整版</th></tr></thead>
+      <tbody id="cmp"></tbody>
+    </table>
+  </section>
+
+  <section class="cta" id="contact">
+    <h2>想把你的品完整算一次？</h2>
+    <p>帶著報價單與想賣的通路來。我們用完整版陪你走一遍：GTM 甘特圖、Media Plan、每條通路的賺賠、每個月的現金、每個數字的來源，下單前就知道最壞會怎樣。</p>
+    <div class="acts">
+      <a class="btn primary" id="cta-main" href="#contact">預約完整版規劃</a>
+      <button class="btn" type="button" id="copy">帶走我的體檢結果</button>
+    </div>
+    <button type="button" class="scan" id="scan2" hidden><span class="qr"></span><span class="tx"><b>把這個工具傳給朋友</b><span>請他用手機掃這個 QR，點一下可以放大</span><code></code></span></button>
+    <span class="todo" id="todo" hidden>預約連結或 LINE 官方帳號待設定，發給別人之前先補上。</span>
+  </section>
+
+  <footer>
+    優曝數位行銷 Upsell Ecommerce Studio<br>
+    中間的過程部分由 Claude Code 所做。
+  </footer>
+</div>
+
+<div class="float"><a class="btn primary" id="cta-float" href="#contact">要完整版？預約規劃</a></div>
+<div class="dlg" id="dlg" hidden role="dialog" aria-modal="true" aria-labelledby="dlg-t">
+  <div class="in">
+    <div style="font-size:30px" aria-hidden="true">🔒</div>
+    <h3 id="dlg-t"></h3>
+    <p id="dlg-p"></p>
+    <div class="acts"><a class="btn primary" id="cta-dlg" href="#contact">預約完整版規劃</a><button class="btn" type="button" id="dlg-s">看範例長怎樣</button><button class="btn" type="button" id="dlg-x">先看到這裡</button></div>
+  </div>
+</div>
+<div class="dlg" id="tk" hidden role="dialog" aria-modal="true" aria-labelledby="tk-t">
+  <div class="in">
+    <h3 id="tk-t">帶走你的體檢結果</h3>
+    <p id="tk-p"></p>
+    <div class="qr" id="tk-qr"></div>
+    <div class="tklink"><input id="tk-url" readonly aria-label="你的結果連結"><button class="btn sm" type="button" id="tk-copy">複製連結</button></div>
+    <div class="acts">
+      <a class="btn primary" id="tk-send" href="#contact">傳給優曝，約時間細算</a>
+      <a class="btn" id="tk-line" target="_blank" rel="noopener" href="#contact">傳到 LINE</a>
+      <button class="btn" type="button" id="tk-share" hidden>分享</button>
+      <button class="btn" type="button" id="tk-text">複製文字結果</button>
+      <button class="btn" type="button" id="tk-x">關閉</button>
+    </div>
+  </div>
+</div>
+<div class="dlg" id="big" hidden role="dialog" aria-modal="true" aria-labelledby="big-t">
+  <div class="in">
+    <h3 id="big-t">用手機掃，自己算一次</h3>
+    <div class="qr"></div>
+    <code></code>
+    <div class="acts"><button class="btn" type="button" id="big-x">關閉</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script id="lite-engine">
+/* ===== 簡易版的算法：一條通路、12 個月。純函式。 ===== */
+const LITE = {
+  H: 12,                                   /* 看 12 個月 */
+  RAMP: [0, 0.4, 0.7],                     /* 第 1 月備貨到貨，第 2 月賣四成，第 3 月七成，之後照填的量 */
+  LOW: { vol: 0.6, ad: 0.05 },             /* 保守：量打六折、廣告多 5 個百分點 */
+  TW: { vat: 0.05, channels: {
+    platform: { name: '電商平台（蝦皮、momo 這一類）', take: 0.14, ad: 0.10, per: 60, lag: 1 },
+    dtc:      { name: '自己的官網', take: 0.03, ad: 0.20, per: 80, lag: 0 },
+    retail:   { name: '實體店或經銷', take: 0.40, ad: 0.02, per: 20, lag: 2 },
+    group:    { name: '團購、社群', take: 0.30, ad: 0, per: 70, lag: 1 } } },
+  AMZ: { referral: 0.15, returns: 0.03, lag: 1, sizes: {
+    small:    { name: '小件（手掌大、500 克內）', fba: 3.6, ship: 0.6 },
+    standard: { name: '標準（鞋盒大、1 公斤上下）', fba: 5.6, ship: 1.6 },
+    large:    { name: '大件（比鞋盒大或 2 公斤以上）', fba: 9.5, ship: 4.0 } } }
+};
+function liteClamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+/* 每賣一台的帳。回傳 net 實收基礎、parts 每一項扣掉多少、payout 通路撥給你的、unitCost 一台的成本、margin 一台留下 */
+function liteUnit(mode, inp, scen) {
+  const up = scen === 'low' ? LITE.LOW.ad : 0; let net, parts, lag;
+  if (mode === 'amz') {
+    const s = LITE.AMZ.sizes[inp.size] || LITE.AMZ.sizes.standard, ad = Math.max(0, inp.adPct || 0) + up; net = inp.price; lag = LITE.AMZ.lag;
+    parts = [['平台抽成', net * LITE.AMZ.referral], ['FBA 配送費', s.fba], ['廣告', net * ad], ['退貨', net * LITE.AMZ.returns], ['頭程運費', s.ship], ['出廠成本', inp.cost]];
+    const out = parts.slice(0, 4).reduce((a, p) => a + p[1], 0), unitCost = inp.cost + s.ship;
+    return { net, parts, payout: net - out, unitCost, margin: net - out - unitCost, lag };
+  }
+  const c = LITE.TW.channels[inp.channel] || LITE.TW.channels.platform; net = inp.price / (1 + LITE.TW.vat); lag = c.lag;
+  parts = [['營業稅', inp.price - net], ['通路拿走', net * c.take], ['廣告', net * (c.ad + up)], ['每單物流與金流', c.per], ['進貨成本', inp.cost]];
+  const out = parts.slice(1, 4).reduce((a, p) => a + p[1], 0);
+  return { net, parts, payout: net - out, unitCost: inp.cost, margin: net - out - inp.cost, lag };
+}
+/* 一個情境 12 個月的結果。下單時一次付清貨款與上市費用；通路晚 lag 個月撥款；賣不掉的貨當成損失 */
+function liteCompute(mode, inp, scen) {
+  const u = liteUnit(mode, inp, scen), H = LITE.H, k = scen === 'low' ? LITE.LOW.vol : 1, qty = Math.max(0, inp.qty || 0), launch = Math.max(0, inp.launch || 0);
+  let stock = qty, sold = 0, soldOut = null; const sales = [], inflow = new Array(H + 4).fill(0);
+  for (let m = 1; m <= H; m++) { const want = Math.max(0, inp.monthly || 0) * k * (m <= 3 ? LITE.RAMP[m - 1] : 1), s = Math.min(stock, want);
+    stock -= s; sold += s; sales.push(s); inflow[m + u.lag] += s * u.payout; if (soldOut === null && qty > 0 && stock <= 1e-9) soldOut = m; }
+  const upfront = qty * u.unitCost + launch; let cum = -upfront, trough = cum, payback = null; const cash = [];
+  for (let m = 1; m <= H + 2; m++) { cum += inflow[m]; if (cum < trough) trough = cum; if (payback === null && cum >= 0) payback = m; cash.push(cum); }
+  const unsold = stock, profit = sold * u.margin - launch - unsold * u.unitCost;
+  return { unit: u, sold, unsold, soldOut, sales, cash, upfront, advance: -trough, payback, profit, revenue: sold * inp.price,
+    breakeven: u.payout > 0 ? upfront / u.payout : null };
+}
+/* 0～100 分：每台留多少 30 分、保守賣得完多少 30 分、保守多快回本 20 分、售價是成本的幾倍 20 分 */
+function liteScore(mode, inp) {
+  const hi = liteCompute(mode, inp, 'high'), lo = liteCompute(mode, inp, 'low'), u = hi.unit;
+  const keep = u.net > 0 ? u.margin / u.net : 0, sell = inp.qty > 0 ? lo.sold / inp.qty : 0, mult = u.unitCost > 0 ? u.net / u.unitCost : 0;
+  const s1 = liteClamp(keep / 0.25, 0, 1) * 30, s2 = liteClamp(sell, 0, 1) * 30, s3 = lo.payback === null ? 0 : liteClamp((14 - lo.payback) / 8, 0, 1) * 20, s4 = liteClamp((mult - 2) / 2, 0, 1) * 20;
+  let score = Math.round(s1 + s2 + s3 + s4), level = score >= 70 ? 'good' : score >= 45 ? 'warn' : 'bad';
+  if (hi.profit < 0) { level = 'bad'; score = Math.min(score, 44); }           /* 樂觀都虧，直接紅燈 */
+  else if (lo.profit < 0 && level === 'good') { level = 'warn'; score = Math.min(score, 69); }   /* 保守會虧，最多黃燈 */
+  return { score, level, hi, lo, keep, sell, mult, parts: [s1, s2, s3, s4] };
+}
+/* 動哪一個數字，保守的結果進步最多。簡易版只給第一名 */
+function liteLevers(mode, inp) {
+  const base = liteCompute(mode, inp, 'low').profit, opts = [
+    ['售價調高 10%', x => { x.price *= 1.1; }], ['進貨成本壓低 10%', x => { x.cost *= 0.9; }], ['每月多賣 20%', x => { x.monthly *= 1.2; }],
+    ['第一批少進 30%', x => { x.qty = Math.round(x.qty * 0.7); }], ['上市費用省 30%', x => { x.launch *= 0.7; }]];
+  return opts.map(o => { const x = Object.assign({}, inp); o[1](x); return { label: o[0], gain: liteCompute(mode, x, 'low').profit - base }; }).sort((a, b) => b.gain - a.gain);
+}
+/* 免費給的兩張大圖：廣告預算分三段（上市前、上市頭三個月、之後），回款看每一季底收回投入的幾成。
+   逐月的數字與各媒體的拆法是完整版的內容 */
+function litePlan(mode, inp) {
+  const one = scen => { const r = liteCompute(mode, inp, scen), adU = (r.unit.parts.find(p => p[0] === '廣告') || [0, 0])[1], launch = Math.max(0, inp.launch || 0);
+    const seg = (a, b) => r.sales.slice(a - 1, b).reduce((x, y) => x + y, 0) * adU, ads = [{ key: 'pre', from: 1, to: 1, total: launch }, { key: 'launch', from: 2, to: 4, total: seg(2, 4) }, { key: 'run', from: 5, to: LITE.H, total: seg(5, LITE.H) }];
+    const run = ads[1].total + ads[2].total, adTotal = launch + run;
+    const quarters = [3, 6, 9, 12].map(m => { const back = r.cash[m - 1] + r.upfront; return { m, back, pct: r.upfront > 0 ? back / r.upfront : null, cum: r.cash[m - 1] }; });
+    return { ads, adTotal, run, adShare: r.revenue > 0 ? adTotal / r.revenue : null, roas: run > 0 ? r.revenue / run : null, monthlyRun: ads[2].total / (LITE.H - 4),
+      quarters, upfront: r.upfront, payback: r.payback, endCash: r.cash[LITE.H - 1], onTheWay: r.cash[LITE.H + 1] - r.cash[LITE.H - 1] }; };
+  return { hi: one('high'), lo: one('low') };
+}
+/* 把一組數字編成一小段字，放在網址的 # 後面；打開連結就還原成同一組數字。解不開或被改過的一律不用 */
+LITE.KEYS = { tw: ['price', 'cost', 'qty', 'monthly', 'channel', 'launch'], amz: ['price', 'cost', 'qty', 'monthly', 'size', 'adPct', 'launch'] };
+function liteEncode(mode, vals) { const ks = LITE.KEYS[mode]; return ks ? [mode].concat(ks.map(k => typeof vals[k] === 'number' ? String(Math.round(vals[k] * 1000) / 1000) : String(vals[k]))).join(',') : ''; }
+function liteDecode(str) {
+  const a = String(str || '').split(','), mode = a[0], ks = Object.prototype.hasOwnProperty.call(LITE.KEYS, mode) ? LITE.KEYS[mode] : null; if (!ks || a.length !== ks.length + 1) return null;
+  const vals = {}, has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+  for (let i = 0; i < ks.length; i++) { const k = ks[i], t = a[i + 1];
+    if (k === 'channel') { if (!has(LITE.TW.channels, t)) return null; vals[k] = t; }
+    else if (k === 'size') { if (!has(LITE.AMZ.sizes, t)) return null; vals[k] = t; }
+    else { if (!/^\d{1,9}(\.\d{1,3})?$/.test(t)) return null; vals[k] = parseFloat(t); } }
+  return { mode, vals };
+}
+/* QR 碼：位元組模式、容錯等級 M、版本 1～12（大約 280 個字以內），自己算、不靠外部程式。
+   回傳 size 邊長幾格、rows[y][x] 是 1 就是黑格。forceMask 只給測試用（指定遮罩好跟別的工具逐格比對） */
+const QR_EC = [0, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22], QR_BLK = [0, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8], QR_TOT = [0, 26, 44, 70, 100, 134, 172, 196, 242, 292, 346, 404, 466];
+const QR_ALN = [[], [], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50], [6, 30, 54], [6, 32, 58]];
+function liteQR(text, forceMask) {
+  const bytes = Array.from(new TextEncoder().encode(String(text)));
+  let ver = 0; for (let v = 1; v <= 12 && !ver; v++) if (bytes.length + (v < 10 ? 2 : 3) <= QR_TOT[v] - QR_BLK[v] * QR_EC[v]) ver = v;
+  if (!ver) return null;
+  /* 資料：模式、長度、內容、結尾，補滿到這個版本裝得下的量 */
+  const dataCw = QR_TOT[ver] - QR_BLK[ver] * QR_EC[ver], bits = [], put = (val, n) => { for (let i = n - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
+  put(4, 4); put(bytes.length, ver < 10 ? 8 : 16); bytes.forEach(b => put(b, 8));
+  put(0, Math.min(4, dataCw * 8 - bits.length)); while (bits.length % 8) bits.push(0);
+  const cw = []; for (let i = 0; i < bits.length; i += 8) cw.push(parseInt(bits.slice(i, i + 8).join(''), 2));
+  for (let pad = 0xEC; cw.length < dataCw; pad ^= 0xEC ^ 0x11) cw.push(pad);
+  /* 容錯碼（里德所羅門），分塊後交錯排列 */
+  const mul = (x, y) => { let z = 0; for (let i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; } return z; };
+  const ec = QR_EC[ver], nb = QR_BLK[ver], gen = []; for (let i = 0; i < ec - 1; i++) gen.push(0); gen.push(1);
+  for (let i = 0, root = 1; i < ec; i++) { for (let j = 0; j < gen.length; j++) { gen[j] = mul(gen[j], root); if (j + 1 < gen.length) gen[j] ^= gen[j + 1]; } root = mul(root, 2); }
+  const shortLen = Math.floor(dataCw / nb), nShort = nb - dataCw % nb, blocks = []; let k = 0;
+  for (let b = 0; b < nb; b++) { const len = shortLen + (b < nShort ? 0 : 1), dat = cw.slice(k, k + len), rem = gen.map(() => 0); k += len;
+    dat.forEach(x => { const f = x ^ rem.shift(); rem.push(0); gen.forEach((c, i) => { rem[i] ^= mul(c, f); }); }); blocks.push({ dat, rem }); }
+  const all = []; for (let i = 0; i <= shortLen; i++) blocks.forEach(b => { if (i < b.dat.length) all.push(b.dat[i]); });
+  for (let i = 0; i < ec; i++) blocks.forEach(b => all.push(b.rem[i]));
+  /* 畫格子：定位圖、校正圖、時序線、格式與版本資訊，剩下的格子放資料 */
+  const n = ver * 4 + 17, M = [], F = []; for (let y = 0; y < n; y++) { M.push(new Array(n).fill(0)); F.push(new Array(n).fill(0)); }
+  const setF = (x, y, d) => { if (x < 0 || y < 0 || x >= n || y >= n) return; M[y][x] = d ? 1 : 0; F[y][x] = 1; };
+  for (let i = 0; i < n; i++) { setF(6, i, i % 2 === 0); setF(i, 6, i % 2 === 0); }
+  [[3, 3], [n - 4, 3], [3, n - 4]].forEach(c => { for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) { const d = Math.max(Math.abs(dx), Math.abs(dy)); setF(c[0] + dx, c[1] + dy, d !== 2 && d !== 4); } });
+  const al = QR_ALN[ver]; al.forEach((cy, i) => al.forEach((cx, j) => { if ((i === 0 && j === 0) || (i === 0 && j === al.length - 1) || (i === al.length - 1 && j === 0)) return;
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) setF(cx + dx, cy + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1); }));
+  const fmt = mask => { let rem = mask; for (let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537); const b = ((mask << 10) | rem) ^ 0x5412, g = i => (b >>> i) & 1;   /* 等級 M 的代碼是 00 */
+    for (let i = 0; i <= 5; i++) setF(8, i, g(i)); setF(8, 7, g(6)); setF(8, 8, g(7)); setF(7, 8, g(8)); for (let i = 9; i < 15; i++) setF(14 - i, 8, g(i));
+    for (let i = 0; i < 8; i++) setF(n - 1 - i, 8, g(i)); for (let i = 8; i < 15; i++) setF(8, n - 15 + i, g(i)); setF(8, n - 8, 1); };
+  fmt(0);
+  if (ver >= 7) { let rem = ver; for (let i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25); const b = (ver << 12) | rem;
+    for (let i = 0; i < 18; i++) { const d = (b >>> i) & 1, a = n - 11 + i % 3, c = Math.floor(i / 3); setF(a, c, d); setF(c, a, d); } }
+  let bi = 0; for (let right = n - 1; right >= 1; right -= 2) { if (right === 6) right = 5;
+    for (let vert = 0; vert < n; vert++) for (let j = 0; j < 2; j++) { const x = right - j, y = ((right + 1) & 2) === 0 ? n - 1 - vert : vert;
+      if (!F[y][x] && bi < all.length * 8) { M[y][x] = (all[bi >>> 3] >>> (7 - (bi & 7))) & 1; bi++; } } }
+  /* 遮罩：八種各試一次，挑最不容易掃錯的（連續同色、2×2 色塊、黑白比例） */
+  const MASK = [(x, y) => (x + y) % 2 === 0, (x, y) => y % 2 === 0, (x, y) => x % 3 === 0, (x, y) => (x + y) % 3 === 0, (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0,
+    (x, y) => x * y % 2 + x * y % 3 === 0, (x, y) => (x * y % 2 + x * y % 3) % 2 === 0, (x, y) => ((x + y) % 2 + x * y % 3) % 2 === 0];
+  const apply = m => { for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (!F[y][x] && MASK[m](x, y)) M[y][x] ^= 1; };
+  const penalty = () => { let p = 0, dark = 0;
+    for (let a = 0; a < n; a++) for (let dir = 0; dir < 2; dir++) { let run = 1; for (let b = 1; b <= n; b++) { const cur = b < n ? (dir ? M[b][a] : M[a][b]) : -1, prev = dir ? M[b - 1][a] : M[a][b - 1]; if (cur === prev) run++; else { if (run >= 5) p += run - 2; run = 1; } } }
+    for (let y = 0; y < n - 1; y++) for (let x = 0; x < n - 1; x++) { const c = M[y][x]; if (c === M[y][x + 1] && c === M[y + 1][x] && c === M[y + 1][x + 1]) p += 3; }
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) dark += M[y][x];
+    return p + Math.floor(Math.abs(dark * 20 - n * n * 10) / (n * n)) * 10; };
+  let best = forceMask; if (!(best >= 0 && best <= 7)) { let min = Infinity; for (let m = 0; m < 8; m++) { apply(m); fmt(m); const pp = penalty(); if (pp < min) { min = pp; best = m; } apply(m); } }
+  apply(best); fmt(best);
+  return { size: n, version: ver, mask: best, rows: M };
+}
+if (typeof module !== 'undefined') module.exports = { LITE, liteUnit, liteCompute, liteScore, liteLevers, litePlan, liteEncode, liteDecode, liteQR };
+</script>
+
+<script>
+/* ===== 畫面 ===== */
+/* 預約連結：把網址填在這裡（表單、行事曆或網站都可以）。留空時按鈕只會捲到頁面最下面 */
+const CONTACT_URL = '';
+/* LINE 官方帳號的 ID（含 @）。填了之後：「傳給優曝」會打開跟官方帳號的對話、把結果帶進輸入框；沒填預約連結時，預約按鈕也會帶到官方帳號 */
+const LINE_OA = '';
+/* 這個頁面公開的網址（放上網站之後填完整網址）。帶走結果的連結與 QR 會用它；留空就用現在打開的網址 */
+const PAGE_URL = 'https://davidkao-workspace.github.io/launch-check/';
+const LINE_SHARE = 'https://line.me/R/share?text=', LINE_OA_MSG = 'https://line.me/R/oaMessage/', LINE_OA_ADD = 'https://line.me/R/ti/p/';
+const CFG = { contact: CONTACT_URL, line: LINE_OA, page: PAGE_URL };
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const FIELDS = {
+  tw: [
+    { k: 'price', l: '售價（含稅）', u: 'NT$', min: 100, max: 10000, step: 10 },
+    { k: 'cost', l: '每台進貨成本', h: '出廠價加運費、關稅，貨到你倉庫的成本', u: 'NT$', min: 10, max: 5000, step: 10 },
+    { k: 'qty', l: '第一批進幾台', u: '台', min: 100, max: 10000, step: 50 },
+    { k: 'monthly', l: '穩定後每月賣幾台', u: '台', min: 10, max: 2000, step: 5 },
+    { k: 'channel', l: '主要在哪裡賣', sel: Object.keys(LITE.TW.channels).map(k => [k, LITE.TW.channels[k].name]) },
+    { k: 'launch', l: '上市要花的一次性費用', h: '拍攝、廣告測試、網紅、開店', u: 'NT$', min: 0, max: 1000000, step: 10000 }],
+  amz: [
+    { k: 'price', l: '售價', u: 'US$', min: 5, max: 200, step: 0.5 },
+    { k: 'cost', l: '每件出廠成本', u: 'US$', min: 0.5, max: 80, step: 0.1 },
+    { k: 'qty', l: '第一批進幾件', u: '件', min: 100, max: 10000, step: 50 },
+    { k: 'monthly', l: '穩定後每月賣幾件', u: '件', min: 10, max: 3000, step: 10 },
+    { k: 'size', l: '商品大小', sel: Object.keys(LITE.AMZ.sizes).map(k => [k, LITE.AMZ.sizes[k].name]) },
+    { k: 'adPct', l: '廣告佔營收', h: '整體廣告花費除以總營收', u: '%', min: 0, max: 40, step: 1, pct: 1 },
+    { k: 'launch', l: '上市要花的一次性費用', h: '拍攝、送測、頁面製作', u: 'US$', min: 0, max: 30000, step: 500 }]
+};
+const EXAMPLES = {
+  tw: [
+    { n: '手沖咖啡磨豆機', v: { price: 1980, cost: 520, qty: 2000, monthly: 180, channel: 'platform', launch: 200000 } },
+    { n: '保溫隨行杯', v: { price: 890, cost: 180, qty: 2000, monthly: 260, channel: 'platform', launch: 120000 } },
+    { n: '露營折疊桌', v: { price: 1490, cost: 560, qty: 3000, monthly: 200, channel: 'retail', launch: 100000 } }],
+  amz: [
+    { n: '瑜珈墊收納帶', v: { price: 19.99, cost: 3.2, qty: 3000, monthly: 450, size: 'small', adPct: 0.15, launch: 3000 } },
+    { n: '桌上型加濕器', v: { price: 39.99, cost: 11, qty: 1500, monthly: 180, size: 'standard', adPct: 0.2, launch: 5000 } },
+    { n: '折疊收納箱', v: { price: 29.99, cost: 9.5, qty: 2000, monthly: 150, size: 'large', adPct: 0.18, launch: 4000 } }]
+};
+const LOCKS = [
+  { t: 'GTM 甘特圖', p: '下單、到貨、上市準備、每條通路哪個月開賣，排在同一條時間軸上，一眼看到哪個月最擠。', pv: 'gt', g: [[0, 26], [8, 18], [24, 76], [34, 66], [50, 50]],
+    amz: { p: '下單、到貨、頁面與送測、每個站點哪個月開賣，排在同一條時間軸上，一眼看到哪個月最擠。' } },
+  { t: 'Media Plan', p: '每條預算拆到 Meta、Google、網紅、站內廣告各多少，換算成點擊、名單與幾支影片；每個月花多少、ROAS 幾倍，跟損益對得起來。', pv: 'bars', h: [70, 88, 52, 44, 40, 36],
+    amz: { p: '每個站點的廣告拆到 Sponsored Products、Brands、Display 各多少，換算成點擊與曝光；每個月花多少、ROAS 幾倍，跟損益對得起來。' } },
+  { t: '每條通路各賺多少', p: '蝦皮、momo、官網、實體，一條一條拆開算。哪一條其實在賠錢，一眼看到。', pv: 'bars', h: [62, 40, 78, 28, 54, 35],
+    amz: { t: '每個站點、每支廣告各賺多少', p: '美國、日本、歐洲站，自動與手動廣告，一個一個拆開算。哪一塊其實在賠錢，一眼看到。' } },
+  { t: '每個月的現金', p: '哪個月要付多少、哪個月才收得到錢、錢最緊是哪個月。', pv: 'line' },
+  { t: '分批進貨怎麼買', p: '一次買滿，還是先買一批看銷售？最壞的情況差多少，算給你看。', pv: 'bars', h: [80, 30, 0, 55, 45, 20] },
+  { t: '哪個數字錯了傷最重', p: '售價、成本、銷量、廣告排成一張風險排行，知道該先確認哪一個。', pv: 'rows', h: [92, 74, 58, 41, 30] },
+  { t: '每個數字靠不靠得住', p: '哪些數字已經有來源、哪些排在上市前驗證；要驗證的那幾格對結果影響多大。', pv: 'rows', h: [70, 88, 46, 64, 52] },
+  { t: '稅費與平台規則', p: '關稅稅號、營業稅先墊、平台開店審核與前置時間，上市前一次對完。', pv: 'rows', h: [84, 60, 76, 38, 66],
+    amz: { t: '關稅、尺寸級距與類目規則', p: '進口關稅、FBA 尺寸級距差一級差多少、類目審核與合規文件，上市前一次對完。' } }
+];
+const COMPARE = [
+  ['一條通路的快速試算', 1, 1], ['樂觀與保守兩種情況', 1, 1], ['每賣一台錢去哪了', 1, 1], ['廣告預算大項與每季回款', 1, 1], ['把自己的結果帶走（連結與 QR）', 1, 1], ['一份完整版的範例報告', 1, 1],
+  ['GTM 甘特圖：採購、上市準備、各通路開賣的時程', 0, 1], ['Media Plan：拆到各媒體的預算、點擊與曝光、ROAS', 0, 1],
+  ['多條通路同時算、各自的賺賠', 0, 1], ['每個月的現金與回款', 0, 1], ['分批進貨與庫存', 0, 1],
+  ['每個數字的來源與可信度', 0, 1], ['風險排行與下單前的檢查表', 0, 1], ['一對一解讀與調整建議', 0, 1]
+];
+const VERDICT = {
+  good: { tag: '綠燈', title: '可以做', sub: '保守來看也站得住。下一步是把每個數字的來源對清楚。' },
+  warn: { tag: '黃燈', title: '要調整才能做', sub: '照現在的數字有風險。先動下面最有感的那一步。' },
+  bad:  { tag: '紅燈', title: '照這樣先不要下單', sub: '樂觀來看都很勉強。售價、成本或量至少要有一個變。' }
+};
+/* 範例報告的數字，由 tools/build-lite-sample.js 產生 */
+/*SAMPLE_BEGIN*/
+const SAMPLE = {"tw":{"gantt":{"n":12,"firstSale":3,"rows":[{"g":"buy","name":"第 1 批","from":1,"to":2,"marks":[{"m":1,"t":"訂金"},{"m":1,"t":"尾款"},{"m":2,"t":"到貨"}],"units":667},{"g":"buy","name":"第 2 批","from":3,"to":5,"marks":[{"m":3,"t":"訂金"},{"m":4,"t":"尾款"},{"m":5,"t":"到貨"}],"units":667},{"g":"buy","name":"第 3 批","from":6,"to":8,"marks":[{"m":6,"t":"訂金"},{"m":7,"t":"尾款"},{"m":8,"t":"到貨"}],"units":666},{"g":"launch","name":"拍攝與素材","from":1,"to":1,"marks":[{"m":1,"t":"執行"}],"amount":40000},{"g":"launch","name":"預熱廣告測試","from":1,"to":1,"marks":[{"m":1,"t":"執行"}],"amount":60000},{"g":"launch","name":"開店與頁面","from":2,"to":2,"marks":[{"m":2,"t":"執行"}],"amount":20000},{"g":"launch","name":"網紅合作","from":3,"to":3,"marks":[{"m":3,"t":"執行"}],"amount":80000},{"g":"channel","name":"電商平台 A（商城）","from":3,"to":12,"marks":[{"m":3,"t":"開賣"},{"m":9,"t":"到上限"}],"full":9,"inLow":true},{"g":"channel","name":"電商平台 B","from":4,"to":12,"marks":[{"m":4,"t":"開賣"},{"m":10,"t":"到上限"}],"full":10,"inLow":true},{"g":"channel","name":"自己的官網","from":3,"to":12,"marks":[{"m":3,"t":"開賣"},{"m":9,"t":"到上限"}],"full":9,"inLow":true},{"g":"channel","name":"實體經銷","from":6,"to":12,"marks":[{"m":6,"t":"開賣"},{"m":10,"t":"到上限"}],"full":10,"inLow":false},{"g":"channel","name":"團購","from":6,"to":12,"marks":[{"m":6,"t":"開賣"}],"full":6,"inLow":false}]},"media":{"n":12,"total":605491,"launch":200000,"ads":405491,"share":0.1607925559986785,"perUnit":313,"roas":7.9,"adsInPl":405491,"phases":[{"name":"預熱","from":1,"to":2,"total":120000},{"name":"上市","from":3,"to":5,"total":151328},{"name":"常態","from":6,"to":12,"total":334163}],"monthly":[100000,20000,97089,24147,30091,36035,41979,47923,51638,52196,52196,52196],"lines":[{"kind":"launch","name":"拍攝與素材","rate":null,"from":1,"to":1,"total":40000,"units":null,"perUnit":null,"roas":null,"done":0,"monthly":[40000,0,0,0,0,0,0,0,0,0,0,0]},{"kind":"launch","name":"預熱廣告測試","rate":null,"from":1,"to":1,"total":60000,"units":null,"perUnit":null,"roas":null,"done":1,"monthly":[60000,0,0,0,0,0,0,0,0,0,0,0]},{"kind":"launch","name":"開店與頁面","rate":null,"from":2,"to":2,"total":20000,"units":null,"perUnit":null,"roas":null,"done":0,"monthly":[0,20000,0,0,0,0,0,0,0,0,0,0]},{"kind":"launch","name":"網紅合作","rate":null,"from":3,"to":3,"total":80000,"units":null,"perUnit":null,"roas":null,"done":1,"monthly":[0,0,80000,0,0,0,0,0,0,0,0,0]},{"kind":"channel","name":"電商平台 A 的廣告","rate":0.12,"from":3,"to":12,"total":210640,"units":945,"perUnit":223,"roas":8.8,"done":1,"monthly":[0,0,8916,12259,15603,18946,22290,25633,26748,26748,26748,26748]},{"kind":"channel","name":"電商平台 B 的廣告","rate":0.05999999999999999,"from":4,"to":12,"total":33435,"units":300,"perUnit":111,"roas":17.5,"done":1,"monthly":[0,0,0,1672,2229,2786,3343,3901,4458,5015,5015,5015]},{"kind":"channel","name":"官網的廣告","rate":0.21999999999999997,"from":3,"to":12,"total":161416,"units":395,"perUnit":409,"roas":4.8,"done":1,"monthly":[0,0,8173,10216,12259,14303,16346,18389,20432,20432,20432,20432]}],"split":[{"media":"拍攝與素材","line":"拍攝與素材","kind":"launch","share":1,"total":40000,"own":true,"conv":null},{"media":"Meta 名單廣告（預熱）","line":"預熱廣告測試","kind":"launch","share":1,"total":60000,"own":false,"conv":{"item":"名單成本","pl":30,"ph":60,"pu":"NT$／筆","unit":"筆","lo":1000,"hi":2000}},{"media":"開店與頁面","line":"開店與頁面","kind":"launch","share":1,"total":20000,"own":true,"conv":null},{"media":"IG 網紅短影音","line":"網紅合作","kind":"launch","share":1,"total":80000,"own":false,"conv":{"item":"網紅短影音","pl":15000,"ph":30000,"pu":"NT$／支","unit":"支","lo":2.6666666666666665,"hi":5.333333333333333}},{"media":"電商平台 A 站內廣告","line":"電商平台 A 的廣告","kind":"channel","share":1,"total":210640,"own":false,"conv":{"item":"平台站內廣告 CPC","pl":3,"ph":6,"pu":"NT$／次點擊","unit":"次點擊","lo":35106.666666666664,"hi":70213.33333333333}},{"media":"電商平台 B 站內廣告","line":"電商平台 B 的廣告","kind":"channel","share":1,"total":33435,"own":false,"conv":{"item":"平台站內廣告 CPC","pl":3,"ph":6,"pu":"NT$／次點擊","unit":"次點擊","lo":5572.486772486772,"hi":11144.973544973544}},{"media":"Meta 轉換廣告","line":"官網的廣告","kind":"channel","share":0.6,"total":96850,"own":false,"conv":{"item":"Meta 廣告 CPC","pl":4,"ph":8,"pu":"NT$／次點擊","unit":"次點擊","lo":12106.227513227512,"hi":24212.455026455023}},{"media":"Google 搜尋廣告","line":"官網的廣告","kind":"channel","share":0.25,"total":40354,"own":false,"conv":{"item":"Google 搜尋 CPC","pl":6,"ph":12,"pu":"NT$／次點擊","unit":"次點擊","lo":3362.8409758965313,"hi":6725.681951793063}},{"media":"Meta 再行銷廣告","line":"官網的廣告","kind":"channel","share":0.15,"total":24212,"own":false,"conv":{"item":"Meta 再行銷 CPM","pl":150,"ph":300,"pu":"NT$／千次曝光","unit":"次曝光","lo":80708.18342151675,"hi":161416.3668430335}}],"byMedia":[{"media":"電商平台 A 站內廣告","total":210640,"monthly":[0,0,8916,12259,15603,18946,22290,25633,26748,26748,26748,26748],"conv":{"unit":"次點擊","lo":35106.666666666664,"hi":70213.33333333333}},{"media":"Meta 轉換廣告","total":96850,"monthly":[0,0,4904,6130,7356,8582,9808,11034,12259,12259,12259,12259],"conv":{"unit":"次點擊","lo":12106.227513227512,"hi":24212.455026455023}},{"media":"IG 網紅短影音","total":80000,"monthly":[0,0,80000,0,0,0,0,0,0,0,0,0],"conv":{"unit":"支","lo":2.6666666666666665,"hi":5.333333333333333}},{"media":"Meta 名單廣告（預熱）","total":60000,"monthly":[60000,0,0,0,0,0,0,0,0,0,0,0],"conv":{"unit":"筆","lo":1000,"hi":2000}},{"media":"Google 搜尋廣告","total":40354,"monthly":[0,0,2043,2554,3065,3576,4086,4597,5108,5108,5108,5108],"conv":{"unit":"次點擊","lo":3362.8409758965313,"hi":6725.681951793063}},{"media":"拍攝與素材","total":40000,"monthly":[40000,0,0,0,0,0,0,0,0,0,0,0],"conv":null},{"media":"電商平台 B 站內廣告","total":33435,"monthly":[0,0,0,1672,2229,2786,3343,3901,4458,5015,5015,5015],"conv":{"unit":"次點擊","lo":5572.486772486772,"hi":11144.973544973544}},{"media":"Meta 再行銷廣告","total":24212,"monthly":[0,0,1226,1532,1839,2145,2452,2758,3065,3065,3065,3065],"conv":{"unit":"次曝光","lo":80708.18342151675,"hi":161416.3668430335}},{"media":"開店與頁面","total":20000,"monthly":[0,20000,0,0,0,0,0,0,0,0,0,0],"conv":null}]},"product":"記憶棉護腰坐墊","price":1980,"landed":615,"qty":2000,"arrive":[2,5,8],"months":12,"fixed":200000,"lo":{"sold":1640,"unsold":330,"revenue":3198607,"op":584831,"margin":0.1828393303655514,"adv":840371,"advM":4,"payback":11},"hi":{"sold":1937,"unsold":33,"revenue":3765667,"op":1001530,"margin":0.26596342915188864,"adv":822269,"advM":4,"payback":11},"channels":[{"name":"電商平台 A（商城）","grade":"A","inLow":true,"payDays":15,"hiUnits":945,"hiGm":737,"hiFee":0,"hiTotal":696041,"loUnits":945,"loGm":610,"loTotal":576546},{"name":"電商平台 B","grade":"B","inLow":true,"payDays":45,"hiUnits":300,"hiGm":835,"hiFee":0,"hiTotal":250545,"loUnits":300,"loGm":722,"loTotal":216683},{"name":"自己的官網","grade":"B","inLow":true,"payDays":7,"hiUnits":395,"hiGm":688,"hiFee":0,"hiTotal":271751,"loUnits":395,"loGm":539,"loTotal":213054},{"name":"實體經銷","grade":"無","inLow":false,"payDays":60,"hiUnits":192,"hiGm":496,"hiFee":126000,"hiTotal":-30714,"loUnits":0,"loGm":402,"loTotal":0},{"name":"團購","grade":"無","inLow":false,"payDays":30,"hiUnits":105,"hiGm":502,"hiFee":0,"hiTotal":52660,"loUnits":0,"loGm":278,"loTotal":0}],"cash":[{"m":1,"sold":0,"goods":330165,"fixed":100000,"other":0,"inflow":0,"net":-430165,"cum":-430165,"cumHi":-430165,"arrive":0},{"m":2,"sold":0,"goods":80137,"fixed":20000,"other":20285,"inflow":0,"net":-120421,"cum":-550586,"cumHi":-550586,"arrive":667},{"m":3,"sold":60,"goods":99050,"fixed":80000,"other":32008,"inflow":59978,"net":-151080,"cum":-701666,"cumHi":-694679,"arrive":0},{"m":4,"sold":95,"goods":231115,"fixed":0,"other":27327,"inflow":119738,"net":-138704,"cum":-840371,"cumHi":-822269,"arrive":0},{"m":5,"sold":120,"goods":80137,"fixed":0,"other":76814,"inflow":164973,"net":8022,"cum":-832349,"cumHi":-801107,"arrive":667},{"m":6,"sold":145,"goods":98901,"fixed":0,"other":69104,"inflow":214200,"net":46195,"cum":-786153,"cumHi":-758630,"arrive":0},{"m":7,"sold":170,"goods":230769,"fixed":0,"other":61319,"inflow":255441,"net":-36647,"cum":-822800,"cumHi":-765070,"arrive":0},{"m":8,"sold":195,"goods":80016,"fixed":0,"other":110550,"inflow":296681,"net":106114,"cum":-716686,"cumHi":-618338,"arrive":666},{"m":9,"sold":210,"goods":0,"fixed":0,"other":98493,"inflow":329845,"net":231352,"cum":-485334,"cumHi":-337518,"arrive":0},{"m":10,"sold":215,"goods":0,"fixed":0,"other":80942,"inflow":343976,"net":263034,"cum":-222300,"cumHi":-16991,"arrive":0},{"m":11,"sold":215,"goods":0,"fixed":0,"other":98643,"inflow":351963,"net":253321,"cum":31021,"cumHi":301494,"arrive":0},{"m":12,"sold":215,"goods":0,"fixed":0,"other":97998,"inflow":355957,"net":257959,"cum":288980,"cumHi":629452,"arrive":0},{"m":13,"sold":0,"goods":0,"fixed":0,"other":0,"inflow":189860,"net":189860,"cum":478840,"cumHi":886439,"arrive":0},{"m":14,"sold":0,"goods":0,"fixed":0,"other":0,"inflow":35943,"net":35943,"cum":514783,"cumHi":927115,"arrive":0}],"batches":[{"name":"一次買滿","note":"全部在第 2 個月到","units":2000,"loOp":632831,"hiOp":1049530,"adv":1419323,"advM":3,"loUnsold":330,"hiUnsold":33,"payback":11},{"name":"分三批","note":"第 2、5、8 個月各到一批（範例的計畫）","units":2000,"loOp":584831,"hiOp":1001530,"adv":840371,"advM":4,"loUnsold":330,"hiUnsold":33,"payback":11},{"name":"只買第一批","note":"先買三分之一，賣得動再追","units":667,"loOp":169859,"hiOp":108135,"adv":602605,"advM":3,"loUnsold":0,"hiUnsold":0,"payback":8}],"risks":[{"label":"電商平台 A（商城）的量","change":"少兩成","dOp":-231572,"dAdv":50634},{"label":"售價","change":"降 10%","dOp":-216055,"dAdv":40608},{"label":"電商平台 A（商城）的開賣時間","change":"晚一個月","dOp":-147030,"dAdv":91103},{"label":"出廠價","change":"漲 10%","dOp":-110229,"dAdv":88920},{"label":"電商平台 A（商城）的回款","change":"晚 30 天","dOp":0,"dAdv":131847},{"label":"匯率","change":"貶 5%","dOp":-55114,"dAdv":35675},{"label":"電商平台 B 的量","change":"少兩成","dOp":-80245,"dAdv":-855},{"label":"電商平台 B 的開賣時間","change":"晚一個月","dOp":-60184,"dAdv":10006}],"checks":[{"name":"每個月都有貨可賣","state":"pass","label":"沒問題","actual":"保守、樂觀都不斷貨"},{"name":"每條通路單台毛利都是正的","state":"pass","label":"沒問題","actual":"都是正的"},{"name":"保守算進來的通路都有量的證據","state":"pass","label":"沒問題","actual":"都有"},{"name":"出廠價有書面依據","state":"pass","label":"沒問題","actual":"現在是書面報價"},{"name":"交期對得上下單時間","state":"pass","label":"沒問題","actual":"生產加運輸 42 天，約 2 個月；訂金在到貨前 2 個月付"},{"name":"到岸成本有拆項","state":"pass","label":"沒問題","actual":"都拆了"},{"name":"進口營業稅先墊有算進現金","state":"pass","label":"沒問題","actual":"到貨付、2 個月後抵回"}],"gates":[{"name":"營業利益率","need":"至少 5%","lo":"18.3%","hi":"26.6%","loPass":true,"hiPass":true},{"name":"到期剩貨","need":"最多 100 台","lo":"330 台","hi":"33 台","loPass":false,"hiPass":true},{"name":"最多先墊","need":"最多 NT$ 100 萬","lo":"NT$ 84 萬","hi":"NT$ 82.2 萬","loPass":true,"hiPass":true},{"name":"售價是出廠價的幾倍","need":"至少 4 倍","lo":"4.0 倍","hi":"4.0 倍","loPass":true,"hiPass":true},{"name":"落地成本佔售價","need":"最多 40%","lo":"31.1%","hi":"31.1%","loPass":true,"hiPass":true}],"trust":[{"item":"出廠價 110 RMB","source":"工廠的書面報價單","grade":"A"},{"item":"匯率 4.5","source":"公司的結匯價","grade":"A"},{"item":"運費、關稅、報關、包材 每台約 125 元","source":"報關行報價，加上查到的關稅稅率","grade":"B"},{"item":"電商平台 A 抽成 12%","source":"平台賣家中心的費率表","grade":"A"},{"item":"電商平台 A 每月最多 120 台","source":"同類新品上架半年後的月銷","grade":"A"},{"item":"官網廣告佔營收 22%","source":"過去三檔廣告的實際數字","grade":"B"},{"item":"電商平台 B 每月最多 45 台","source":"由平台累計銷量換算成月銷","grade":"B"},{"item":"實體經銷每店每月 3 台、上架費每月 1.8 萬","source":"下單前向經銷商確認","grade":"無"},{"item":"團購每月 15 台","source":"第一檔團購後更新","grade":"無"}]},"amz":{"gantt":{"n":12,"firstSale":3,"rows":[{"g":"buy","name":"第 1 批","from":1,"to":2,"marks":[{"m":1,"t":"訂金"},{"m":1,"t":"尾款"},{"m":2,"t":"到貨"}],"units":1000},{"g":"buy","name":"第 2 批","from":3,"to":5,"marks":[{"m":3,"t":"訂金"},{"m":4,"t":"尾款"},{"m":5,"t":"到貨"}],"units":1000},{"g":"buy","name":"第 3 批","from":6,"to":8,"marks":[{"m":6,"t":"訂金"},{"m":7,"t":"尾款"},{"m":8,"t":"到貨"}],"units":1000},{"g":"launch","name":"拍攝與頁面","from":1,"to":1,"marks":[{"m":1,"t":"執行"}],"amount":1000},{"g":"launch","name":"加強版頁面與影片","from":1,"to":1,"marks":[{"m":1,"t":"執行"}],"amount":800},{"g":"launch","name":"送測與評論計畫","from":2,"to":2,"marks":[{"m":2,"t":"執行"}],"amount":1200},{"g":"channel","name":"美國站","from":3,"to":12,"marks":[{"m":3,"t":"開賣"},{"m":6,"t":"到上限"}],"full":6,"inLow":true},{"g":"channel","name":"日本站","from":5,"to":12,"marks":[{"m":5,"t":"開賣"},{"m":11,"t":"到上限"}],"full":11,"inLow":true},{"g":"channel","name":"歐洲站（德國）","from":6,"to":12,"marks":[{"m":6,"t":"開賣"},{"m":10,"t":"到上限"}],"full":10,"inLow":false},{"g":"channel","name":"站外折扣活動","from":4,"to":12,"marks":[{"m":4,"t":"開賣"}],"full":4,"inLow":false}]},"media":{"n":12,"total":10704.13,"launch":3000,"ads":7704.13,"share":0.18835123845514357,"perUnit":3.65,"roas":7,"adsInPl":7704.13,"phases":[{"name":"預熱","from":1,"to":2,"total":3000},{"name":"上市","from":3,"to":5,"total":1390.26},{"name":"常態","from":6,"to":12,"total":6313.87}],"monthly":[1800,1200,351.97,439.96,598.34,764.55,815.39,866.23,917.07,967.9,991.37,991.37],"lines":[{"kind":"launch","name":"拍攝與頁面","rate":null,"from":1,"to":1,"total":1000,"units":null,"perUnit":null,"roas":null,"done":0,"monthly":[1000,0,0,0,0,0,0,0,0,0,0,0]},{"kind":"launch","name":"加強版頁面與影片","rate":null,"from":1,"to":1,"total":800,"units":null,"perUnit":null,"roas":null,"done":0,"monthly":[800,0,0,0,0,0,0,0,0,0,0,0]},{"kind":"launch","name":"送測與評論計畫","rate":null,"from":2,"to":2,"total":1200,"units":null,"perUnit":null,"roas":null,"done":0,"monthly":[0,1200,0,0,0,0,0,0,0,0,0,0]},{"kind":"channel","name":"美國站的廣告","rate":0.15,"from":3,"to":12,"total":5631.45,"units":1920,"perUnit":2.93,"roas":6.7,"done":0.9999999999999999,"monthly":[0,0,351.97,439.96,527.95,615.94,615.94,615.94,615.94,615.94,615.94,615.94]},{"kind":"channel","name":"日本站的廣告","rate":0.11999999999999998,"from":5,"to":12,"total":1196.68,"units":510,"perUnit":2.35,"roas":8.3,"done":1,"monthly":[0,0,0,0,70.39,93.86,117.32,140.79,164.25,187.71,211.18,211.18]},{"kind":"channel","name":"歐洲站的廣告","rate":0.14000000000000004,"from":6,"to":12,"total":876,"units":320,"perUnit":2.74,"roas":7.1,"done":1,"monthly":[0,0,0,0,0,54.75,82.13,109.5,136.88,164.25,164.25,164.25]}],"split":[{"media":"拍攝與頁面","line":"拍攝與頁面","kind":"launch","share":1,"total":1000,"own":true,"conv":null},{"media":"加強版頁面與影片","line":"加強版頁面與影片","kind":"launch","share":1,"total":800,"own":true,"conv":null},{"media":"送測與評論計畫","line":"送測與評論計畫","kind":"launch","share":1,"total":1200,"own":true,"conv":null},{"media":"Sponsored Products（美國站）","line":"美國站的廣告","kind":"channel","share":0.7,"total":3942.01,"own":false,"conv":{"item":"Sponsored Products CPC","pl":0.6,"ph":1.2,"pu":"US$／次點擊","unit":"次點擊","lo":3285.010909090908,"hi":6570.021818181816}},{"media":"Sponsored Brands（美國站）","line":"美國站的廣告","kind":"channel","share":0.2,"total":1126.29,"own":false,"conv":{"item":"Sponsored Brands CPC","pl":0.8,"ph":1.6,"pu":"US$／次點擊","unit":"次點擊","lo":703.9309090909089,"hi":1407.8618181818179}},{"media":"Sponsored Display（美國站）","line":"美國站的廣告","kind":"channel","share":0.1,"total":563.14,"own":false,"conv":{"item":"Sponsored Display CPM","pl":3,"ph":6,"pu":"US$／千次曝光","unit":"次曝光","lo":93857.45454545453,"hi":187714.90909090906}},{"media":"Sponsored Products（日本站）","line":"日本站的廣告","kind":"channel","share":1,"total":1196.68,"own":false,"conv":{"item":"Sponsored Products CPC","pl":0.6,"ph":1.2,"pu":"US$／次點擊","unit":"次點擊","lo":997.2354545454543,"hi":1994.4709090909087}},{"media":"Sponsored Products（歐洲站）","line":"歐洲站的廣告","kind":"channel","share":1,"total":876,"own":false,"conv":{"item":"Sponsored Products CPC","pl":0.6,"ph":1.2,"pu":"US$／次點擊","unit":"次點擊","lo":730.0024242424244,"hi":1460.0048484848487}}],"byMedia":[{"media":"Sponsored Products（美國站）","total":3942.01,"monthly":[0,0,246.38,307.97,369.56,431.16,431.16,431.16,431.16,431.16,431.16,431.16],"conv":{"unit":"次點擊","lo":3285.010909090908,"hi":6570.021818181816}},{"media":"送測與評論計畫","total":1200,"monthly":[0,1200,0,0,0,0,0,0,0,0,0,0],"conv":null},{"media":"Sponsored Products（日本站）","total":1196.68,"monthly":[0,0,0,0,70.39,93.86,117.32,140.79,164.25,187.71,211.18,211.18],"conv":{"unit":"次點擊","lo":997.2354545454543,"hi":1994.4709090909087}},{"media":"Sponsored Brands（美國站）","total":1126.29,"monthly":[0,0,70.39,87.99,105.59,123.19,123.19,123.19,123.19,123.19,123.19,123.19],"conv":{"unit":"次點擊","lo":703.9309090909089,"hi":1407.8618181818179}},{"media":"拍攝與頁面","total":1000,"monthly":[1000,0,0,0,0,0,0,0,0,0,0,0],"conv":null},{"media":"Sponsored Products（歐洲站）","total":876,"monthly":[0,0,0,0,0,54.75,82.13,109.5,136.88,164.25,164.25,164.25],"conv":{"unit":"次點擊","lo":730.0024242424244,"hi":1460.0048484848487}},{"media":"加強版頁面與影片","total":800,"monthly":[800,0,0,0,0,0,0,0,0,0,0,0],"conv":null},{"media":"Sponsored Display（美國站）","total":563.14,"monthly":[0,0,35.2,44,52.79,61.59,61.59,61.59,61.59,61.59,61.59,61.59],"conv":{"unit":"次曝光","lo":93857.45454545453,"hi":187714.90909090906}}]},"product":"矽膠折疊水杯","price":19.99,"landed":3.81,"qty":3000,"arrive":[2,5,8],"months":12,"fixed":3000,"lo":{"sold":2430,"unsold":550,"revenue":47515.34,"op":5793.56,"margin":0.12193023419998172,"adv":8951.25,"advM":4,"payback":12},"hi":{"sold":2930,"unsold":50,"revenue":56830.7,"op":13591.14,"margin":0.23915141416043212,"adv":8393.36,"advM":4,"payback":10},"channels":[{"name":"美國站","grade":"A","inLow":true,"payDays":14,"hiUnits":1920,"hiGm":6.28,"hiFee":0,"hiTotal":12056.73,"loUnits":1920,"loGm":4.41,"loTotal":8468.72},{"name":"日本站","grade":"B","inLow":true,"payDays":14,"hiUnits":510,"hiGm":6.57,"hiFee":0,"hiTotal":3348.74,"loUnits":510,"loGm":4.89,"loTotal":2495.4},{"name":"歐洲站（德國）","grade":"無","inLow":false,"payDays":14,"hiUnits":320,"hiGm":5.48,"hiFee":1260,"hiTotal":492.03,"loUnits":0,"loGm":3.31,"loTotal":0},{"name":"站外折扣活動","grade":"無","inLow":false,"payDays":14,"hiUnits":180,"hiGm":5.33,"hiFee":0,"hiTotal":960.21,"loUnits":0,"loGm":3.48,"loTotal":0}],"cash":[{"m":1,"sold":0,"goods":3200,"fixed":1800,"other":0,"inflow":0,"net":-5000,"cum":-5000,"cumHi":-5000,"arrive":0},{"m":2,"sold":0,"goods":608,"fixed":1200,"other":49,"inflow":0,"net":-1857,"cum":-6857,"cumHi":-6857,"arrive":1000},{"m":3,"sold":120,"goods":960,"fixed":0,"other":629.61,"inflow":801.32,"net":-788.29,"cum":-7645.29,"cumHi":-7449.04,"arrive":0},{"m":4,"sold":150,"goods":2240,"fixed":0,"other":768.76,"inflow":1702.8,"net":-1305.96,"cum":-8951.25,"cumHi":-8393.36,"arrive":0},{"m":5,"sold":210,"goods":608,"fixed":0,"other":1078.1,"inflow":2273.95,"net":587.85,"cum":-8363.41,"cumHi":-7258.29,"arrive":1000},{"m":6,"sold":250,"goods":960,"fixed":0,"other":1253.32,"inflow":2885.83,"net":672.51,"cum":-7690.89,"cumHi":-6077.35,"arrive":0},{"m":7,"sold":260,"goods":2240,"fixed":0,"other":1281.38,"inflow":3183.32,"net":-338.05,"cum":-8028.95,"cumHi":-5737.68,"arrive":0},{"m":8,"sold":270,"goods":608,"fixed":0,"other":1358.94,"inflow":3305.53,"net":1338.59,"cum":-6690.36,"cumHi":-3614.68,"arrive":1000},{"m":9,"sold":280,"goods":0,"fixed":0,"other":1386,"inflow":3427.74,"net":2041.73,"cum":-4648.63,"cumHi":-681.33,"arrive":0},{"m":10,"sold":290,"goods":0,"fixed":0,"other":1412.57,"inflow":3549.94,"net":2137.37,"cum":-2511.25,"cumHi":2455.35,"arrive":0},{"m":11,"sold":300,"goods":0,"fixed":0,"other":1438.63,"inflow":3672.15,"net":2233.52,"cum":-277.73,"cumHi":5765.01,"arrive":0},{"m":12,"sold":300,"goods":0,"fixed":0,"other":1423.63,"inflow":3729.18,"net":2305.55,"cum":2027.81,"cumHi":9153.03,"arrive":0},{"m":13,"sold":0,"goods":0,"fixed":0,"other":0,"inflow":1740.28,"net":1740.28,"cum":3768.1,"cumHi":11385.22,"arrive":0}],"batches":[{"name":"一次買滿","note":"全部在第 2 個月到","units":3000,"loOp":5793.56,"hiOp":13591.14,"adv":14573,"advM":2,"loUnsold":550,"hiUnsold":50,"payback":12},{"name":"分三批","note":"第 2、5、8 個月各到一批（範例的計畫）","units":3000,"loOp":5793.56,"hiOp":13591.14,"adv":8951.25,"advM":4,"loUnsold":550,"hiUnsold":50,"payback":12},{"name":"只買第一批","note":"先買三分之一，賣得動再追","units":1000,"loOp":1303.35,"hiOp":1749.32,"adv":6857,"advM":2,"loUnsold":0,"hiUnsold":0,"payback":8}],"risks":[{"label":"美國站的量","change":"少兩成","dOp":-3156.02,"dAdv":240.75},{"label":"售價","change":"降 10%","dOp":-3033.36,"dAdv":200.42},{"label":"美國站的開賣時間","change":"晚一個月","dOp":-1725.95,"dAdv":983.04},{"label":"出廠價","change":"漲 10%","dOp":-1142.4,"dAdv":700.8},{"label":"美國站的回款","change":"晚 30 天","dOp":0,"dAdv":1707.02},{"label":"美國站的廣告","change":"多 3 個百分點","dOp":-1126.29,"dAdv":158.38},{"label":"日本站的量","change":"少兩成","dOp":-887.5,"dAdv":0},{"label":"日本站的開賣時間","change":"晚一個月","dOp":-783.08,"dAdv":0}],"checks":[{"name":"每個月都有貨可賣","state":"pass","label":"沒問題","actual":"保守、樂觀都不斷貨"},{"name":"每條通路單件毛利都是正的","state":"pass","label":"沒問題","actual":"都是正的"},{"name":"保守算進來的通路都有量的證據","state":"pass","label":"沒問題","actual":"都有"},{"name":"出廠價有書面依據","state":"pass","label":"沒問題","actual":"現在是書面報價"},{"name":"交期對得上下單時間","state":"pass","label":"沒問題","actual":"生產加運輸 58 天，約 2 個月；訂金在到貨前 2 個月付"},{"name":"到岸成本有拆項","state":"pass","label":"沒問題","actual":"都拆了"}],"gates":[{"name":"營業利益率","need":"至少 5%","lo":"12.2%","hi":"23.9%","loPass":true,"hiPass":true},{"name":"到期剩貨","need":"最多 150 件","lo":"550 件","hi":"50 件","loPass":false,"hiPass":true},{"name":"最多先墊","need":"最多 US$ 12,000","lo":"US$ 8,951","hi":"US$ 8,393","loPass":true,"hiPass":true},{"name":"售價是出廠價的幾倍","need":"至少 4 倍","lo":"6.2 倍","hi":"6.2 倍","loPass":true,"hiPass":true},{"name":"落地成本佔售價","need":"最多 40%","lo":"19%","hi":"19%","loPass":true,"hiPass":true}],"trust":[{"item":"出廠價 US$ 3.20","source":"工廠的書面報價單","grade":"A"},{"item":"頭程運費 每件約 US$ 0.61","source":"貨代報價","grade":"B"},{"item":"美國站 FBA 配送費 US$ 3.60","source":"亞馬遜的費用計算機","grade":"A"},{"item":"美國站廣告佔營收 15%","source":"同類目三個競品的廣告報表","grade":"B"},{"item":"美國站每月最多 210 件","source":"同類目前 50 名的月銷數據","grade":"A"},{"item":"日本站每月最多 90 件","source":"由類目排名換算成月銷","grade":"B"},{"item":"歐洲站每月最多 60 件、合規代理每月 US$ 180","source":"開站前向合規代理確認","grade":"無"},{"item":"站外折扣活動每月 20 件","source":"第一次活動後更新","grade":"無"}]}};
+/*SAMPLE_END*/
+const SP_TABS = [['gantt', 'GTM 甘特圖'], ['media', 'Media Plan'], ['ch', '每條通路各賺多少'], ['cash', '每個月的現金'], ['buy', '分批進貨怎麼買'], ['risk', '哪個數字錯了傷最重'], ['trust', '每個數字靠不靠得住'], ['gate', '下單前的標準與檢查']];
+const KEY = 'upsell-launch-check-v1';
+let spTab = 0, lockAt = 0;
+let mode = 'tw', vals = { tw: Object.assign({}, EXAMPLES.tw[0].v), amz: Object.assign({}, EXAMPLES.amz[0].v) }, shown = 0;
+try { const j = JSON.parse(localStorage.getItem(KEY) || 'null'); if (j && j.vals && (j.mode === 'tw' || j.mode === 'amz')) { mode = j.mode;
+  ['tw', 'amz'].forEach(m => FIELDS[m].forEach(f => { const v = j.vals[m] && j.vals[m][f.k]; if (f.sel ? f.sel.some(o => o[0] === v) : (typeof v === 'number' && isFinite(v) && v >= 0)) vals[m][f.k] = v; })); } } catch (e) { /* 存不了就算了 */ }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ mode, vals })); } catch (e) { /* 同上 */ } };
+/* 網址帶進來的三樣東西：#r= 是別人（或自己）帶走的那組數字；?m= 指定先開哪個模式；?s= 是活動代號，之後傳回來的結果會帶著它 */
+function applyShared(hash) { let t = ''; try { t = decodeURIComponent((String(hash || '').match(/[#&]r=([^&]*)/) || [])[1] || ''); } catch (e) { return false; }
+  const d = liteDecode(t); if (!d) return false; mode = d.mode; vals[mode] = Object.assign({}, vals[mode], d.vals); return true; }
+const QS = new URLSearchParams(location.search), fromLink = applyShared(location.hash);
+if (!fromLink && (QS.get('m') === 'tw' || QS.get('m') === 'amz')) mode = QS.get('m');
+let SRC = ''; try { SRC = localStorage.getItem(KEY + '-src') || ''; } catch (e) { /* 同上 */ }
+if (/^[\w-]{1,24}$/.test(QS.get('s') || '')) { SRC = QS.get('s'); try { localStorage.setItem(KEY + '-src', SRC); } catch (e) { /* 同上 */ } }
+
+const cur = () => mode === 'amz' ? 'US$' : 'NT$', unitW = () => mode === 'amz' ? '件' : '台';
+const n0 = v => Math.round(v).toLocaleString('en-US');
+function money(v, exact) { const a = Math.abs(v), s = v < -0.5 ? '−' : '';
+  if (mode === 'amz') return s + 'US$ ' + (exact && a < 100 ? a.toFixed(2) : n0(a));
+  return s + 'NT$ ' + (!exact && a >= 10000 ? (a / 10000).toFixed(a >= 1000000 ? 0 : 1).replace(/\.0$/, '') + ' 萬' : n0(a)); }
+const pc = v => (v * 100).toFixed(0) + '%';
+
+function buildForm() {
+  $('form').innerHTML = FIELDS[mode].map(f => { const id = 'f-' + f.k, v = vals[mode][f.k];
+    if (f.sel) return '<div class="f"><label for="' + id + '">' + esc(f.l) + '</label><select id="' + id + '" data-k="' + f.k + '">' + f.sel.map(o => '<option value="' + o[0] + '"' + (o[0] === v ? ' selected' : '') + '>' + esc(o[1]) + '</option>').join('') + '</select></div>';
+    const show = f.pct ? Math.round(v * 100) : v;
+    return '<div class="f"><div class="row"><div><label for="' + id + '">' + esc(f.l) + '</label>' + (f.h ? '<small>' + esc(f.h) + '</small>' : '') + '</div>' +
+      '<div class="box"><span>' + f.u + '</span><input id="' + id + '" data-k="' + f.k + '" type="number" inputmode="decimal" min="' + f.min + '" step="' + f.step + '" value="' + show + '"></div></div>' +
+      '<input type="range" data-k="' + f.k + '" aria-label="' + esc(f.l) + '" min="' + f.min + '" max="' + f.max + '" step="' + f.step + '" value="' + show + '"></div>'; }).join('');
+  $('chips').innerHTML = '<span>先看範例：</span>' + EXAMPLES[mode].map((e, i) => '<button type="button" class="chip" data-ex="' + i + '" aria-pressed="false">' + esc(e.n) + '</button>').join('');
+  markChips();
+}
+function markChips() { document.querySelectorAll('.chip').forEach(b => { const e = EXAMPLES[mode][+b.dataset.ex]; b.setAttribute('aria-pressed', Object.keys(e.v).every(k => e.v[k] === vals[mode][k]) ? 'true' : 'false'); }); }
+function countTo(el, to) { const from = shown, t0 = performance.now(), still = matchMedia('(prefers-reduced-motion: reduce)').matches; shown = to;
+  if (still) { el.textContent = to; return; }
+  const step = t => { const k = Math.min(1, (t - t0) / 700), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(from + (to - from) * e); if (k < 1 && shown === to) requestAnimationFrame(step); else el.textContent = shown; };
+  requestAnimationFrame(step); }
+
+function render() {
+  const v = vals[mode], R = liteScore(mode, v), hi = R.hi, lo = R.lo, u = hi.unit, V = VERDICT[R.level], W = unitW();
+  document.documentElement.style.setProperty('--tone', 'var(--' + R.level + ')');
+  $('arc').style.strokeDashoffset = String(440 - 440 * R.score / 100); countTo($('score'), R.score);
+  $('v-tag').textContent = V.tag; $('v-title').textContent = V.title; $('v-sub').textContent = V.sub;
+  const lev = liteLevers(mode, v)[0], ins = [];
+  ins.push('每賣一' + W + '你留下 <b>' + money(u.margin, 1) + '</b>，是實收的 ' + pc(R.keep) + (R.keep >= 0.25 ? '，空間夠。' : R.keep >= 0.1 ? '，不算厚。' : R.keep > 0 ? '，太薄了，稍微多打一點廣告就沒了。' : '，賣一' + W + '賠一' + W + '。'));
+  ins.push(lo.unsold > 0.5 ? '保守來看 12 個月賣不完，會剩 <b>' + n0(lo.unsold) + ' ' + W + '</b>，等於 ' + money(lo.unsold * u.unitCost) + ' 的貨壓在倉庫。' : '保守來看第 ' + (lo.soldOut || LITE.H) + ' 個月就賣完，貨不會壓著；賣得動的話要想好怎麼補貨。');
+  ins.push('下單那一刻要先拿出 <b>' + money(hi.upfront) + '</b>。' + (hi.payback ? '樂觀第 ' + hi.payback + ' 個月回本' : '樂觀 14 個月內回不了本') + '，' + (lo.payback ? '保守第 ' + lo.payback + ' 個月。' : '保守回不了本。'));
+  $('ins').innerHTML = ins.map((t, i) => '<li><i>' + (i + 1) + '</i><span>' + t + '</span></li>').join('') +
+    (lev && lev.gain > 0 ? '<li class="lever"><i>★</i><span>最有感的一步：<b>' + esc(lev.label) + '</b>，保守的結果多 ' + money(lev.gain) + '。<button type="button" class="more" data-lock="5">另外四步的排行在完整版</button></span></li>' : '');
+  const kp = (id, val) => { $(id).textContent = money(val); $(id).className = 'v num ' + (val < -0.5 ? 'neg' : 'pos'); };
+  kp('k-hi', hi.profit); $('k-hi-s').textContent = '賣出 ' + n0(hi.sold) + '／' + n0(v.qty) + ' ' + W;
+  kp('k-lo', lo.profit); $('k-lo-s').textContent = '賣出 ' + n0(lo.sold) + '／' + n0(v.qty) + ' ' + W;
+  $('k-adv').textContent = money(hi.upfront); $('k-adv-s').textContent = '貨款 ' + money(v.qty * u.unitCost) + '＋上市費用';
+  $('k-pay').textContent = hi.payback ? '第 ' + hi.payback + ' 個月' : '回不了本'; $('k-pay').className = 'v num' + (hi.payback ? '' : ' neg');
+  $('k-pay-s').textContent = (lo.payback ? '保守第 ' + lo.payback + ' 個月' : '保守回不了本') + (hi.breakeven ? '｜打平要賣 ' + n0(hi.breakeven) + ' ' + W : '');
+  /* 每賣一台：由上往下一項一項扣 */
+  const P = v.price, rows = [['售價', P, 0, P, 'sum']]; let left = P;
+  u.parts.forEach(p => { left -= p[1]; rows.push([p[0], -p[1], Math.max(0, left), p[1], '']); });
+  rows.push(['你留下', u.margin, 0, Math.abs(u.margin), 'end' + (u.margin < 0 ? ' bad' : '')]);
+  $('wf').innerHTML = rows.map(r => '<div class="r ' + r[4] + '"><span class="n">' + esc(r[0]) + '</span><span class="t"><i style="left:' + (100 * liteClamp(r[2] / P, 0, 1)).toFixed(2) + '%;width:' + (100 * liteClamp(r[3] / P, 0, 1)).toFixed(2) + '%"></i></span><span class="a num">' + (r[1] < 0 ? '−' : '') + (mode === 'amz' ? Math.abs(r[1]).toFixed(2) : n0(Math.abs(r[1]))) + '</span></div>').join('');
+  $('wf-title').textContent = '每賣一' + W + '，錢去哪了';
+  $('wf-hint').textContent = '樂觀情況，單位是 ' + cur() + '。每一條是從售價裡扣掉的那一塊，最後一條是你留下的。';
+  $('wf-note').textContent = mode === 'amz' ? '完整版會照你的品類與尺寸，把平台抽成、FBA 配送費與退貨一項一項算。' : '完整版會照你的通路與合作方式，把抽成與每單費用一條一條算。';
+  /* 廣告預算（大項）與每季回款 */
+  const PL = litePlan(mode, v), A = PL.hi, AN = { pre: ['上市前準備', mode === 'amz' ? '拍攝、送測、頁面' : '拍攝、測試、網紅'], launch: ['上市期廣告', '開賣頭三個月'], run: ['常態廣告', '第 5～12 個月'] };
+  const amax = Math.max.apply(null, A.ads.map(x => x.total).concat([1]));
+  $('ad-hint').textContent = '照你填的量賣（樂觀），12 個月分三段：上市前先花的、開賣頭三個月的廣告、之後每個月的廣告。';
+  $('ad-rows').innerHTML = A.ads.map(x => '<div class="r"><span class="n">' + AN[x.key][0] + '<small>' + AN[x.key][1] + '</small></span><span class="t"><i style="width:' + (100 * x.total / amax).toFixed(1) + '%"></i></span><span class="a num">' + money(x.total) + '<small>' + (A.adTotal > 0 ? pc(x.total / A.adTotal) : '0%') + '</small></span></div>').join('');
+  $('ad-facts').innerHTML = [['12 個月合計', money(A.adTotal), '保守 ' + money(PL.lo.adTotal)], ['佔成交金額', A.adShare === null ? '—' : (A.adShare * 100).toFixed(1) + '%', '常態每月約 ' + money(A.monthlyRun)], ['廣告的 ROAS', A.roas === null ? '—' : A.roas.toFixed(1) + ' 倍', '每花 1 元帶回的成交']]
+    .map(f => '<div><small>' + f[0] + '</small><b class="num">' + f[1] + '</b><span>' + f[2] + '</span></div>').join('');
+  $('ad-note').textContent = A.run > 0 ? '廣告跟著銷量走：賣得多花得多，賣得少也跟著省。上市前那一筆是先付的，要算進下單時準備的錢。' : '這條通路主要靠通路自己帶客，廣告集中在上市前那一筆。';
+  $('ad-more').textContent = (mode === 'amz' ? '拆到 Sponsored Products、Brands、Display 各多少' : '拆到 Meta、Google、網紅、站內廣告各多少') + '、每個月怎麼排，在完整版 →';
+  const Q = PL.hi.quarters, QL = PL.lo.quarters, sc = liteClamp(Math.max.apply(null, Q.map(x => x.pct || 0).concat([1.25])), 1.25, 3), w = x => (100 * liteClamp((x || 0) / sc, 0, 1)).toFixed(1);
+  $('pay-hint').textContent = '下單那一刻先拿出 ' + money(A.upfront) + '（貨款加上市費用）。把它當成 100%，看每一季底收回了幾成。';
+  $('pay-rows').innerHTML = Q.map((x, i) => '<div class="r"><span class="n">第 ' + x.m + ' 個月底<small>第 ' + (i + 1) + ' 季</small></span><span class="t"><i style="width:' + w(x.pct) + '%"></i><i class="lo" style="width:' + w(QL[i].pct) + '%"></i><u style="left:' + (100 / sc).toFixed(1) + '%"></u></span>' +
+    '<span class="a num">' + (x.pct === null ? '—' : pc(x.pct)) + '<small>保守 ' + (QL[i].pct === null ? '—' : pc(QL[i].pct)) + '</small></span></div>').join('');
+  const pb = r => r.payback ? '第 ' + r.payback + ' 個月' : '回不了本', end = r => (r.endCash >= 0 ? '多出 ' : '還差 ') + money(Math.abs(r.endCash));
+  $('pay-facts').innerHTML = [['回本', pb(PL.hi), '保守 ' + pb(PL.lo)], ['第 12 個月底', end(PL.hi), '保守' + end(PL.lo)], ['12 個月收回', money(Q[3].back), '保守 ' + money(QL[3].back)]]
+    .map(f => '<div><small>' + f[0] + '</small><b class="num">' + f[1] + '</b><span>' + f[2] + '</span></div>').join('');
+  $('pay-note').textContent = A.onTheWay > 0.5 ? '第 12 個月底還有 ' + money(A.onTheWay) + ' 在通路那邊等撥款，會在之後入帳。' : '賣出去的貨款在第 12 個月底前都已經入帳。';
+  markChips(); save();
+}
+/* ---- 範例報告 ---- */
+function renderSample() {
+  const D = SAMPLE[mode]; if (!D) { $('sample').hidden = true; return; }
+  const W = unitW(), amz = mode === 'amz', nn = (v, dec) => (v < 0 ? '−' : '') + (dec && amz ? Math.abs(v).toFixed(2) : n0(Math.abs(v))), sg = v => v < 0 ? ' style="color:var(--bad)"' : '';
+  const th = cols => '<thead><tr>' + cols.map(c => '<th' + (c[1] ? ' class="' + c[1] + '"' : '') + (c[2] ? ' colspan="' + c[2] + '"' : '') + '>' + c[0] + '</th>').join('') + '</tr></thead>';
+  const tb = (head, rows) => '<div class="tbl"><table class="rp">' + head + '<tbody>' + rows.join('') + '</tbody></table></div>';
+  $('sp-intro').textContent = '以「' + D.product + '」為例：售價 ' + money(D.price, 1) + '、每' + W + '落地成本 ' + money(D.landed, 1) + '、進 ' + n0(D.qty) + ' ' + W + '分三批、看 ' + D.months + ' 個月。下面八頁就是完整版交給你的東西。';
+  $('sp-kpis').innerHTML = [['樂觀能賺', money(D.hi.op)], ['保守能賺', money(D.lo.op)], ['最多要先墊', money(D.lo.adv)], ['保守幾月回本', D.lo.payback ? '第 ' + D.lo.payback + ' 個月' : '回不了本']].map(k => '<div><small>' + k[0] + '</small><b class="num">' + k[1] + '</b></div>').join('');
+  $('sp-tabs').innerHTML = SP_TABS.map((t, i) => '<button type="button" role="tab" data-sp="' + i + '" aria-selected="' + (i === spTab) + '">' + (i + 1) + '　' + t[1] + '</button>').join('');
+  let h = ''; const tk = SP_TABS[spTab][0];
+  if (tk === 'gantt') {
+    const G = D.gantt, ms = []; for (let m = 1; m <= G.n; m++) ms.push(m);
+    const GN = { buy: '採購', launch: '上市準備', channel: amz ? '站點與通路' : '通路' }, KD = { buy: 'buy', launch: 'fix' }, chs = G.rows.filter(r => r.g === 'channel'), buys = G.rows.filter(r => r.g === 'buy');
+    const waves = chs.map(r => r.from).filter((v, i, a) => a.indexOf(v) === i), res = {}; if (D.lo.advM) res[D.lo.advM] = ['墊最多']; if (D.lo.payback) res[D.lo.payback] = (res[D.lo.payback] || []).concat(['回本']);
+    const cell = (cls, txt) => '<td class="' + cls + '"><i>' + (txt || '') + '</i></td>', grp = t => '<tr class="grp"><td colspan="' + (G.n + 1) + '">' + t + '</td></tr>';
+    let last = '', rows = '';
+    G.rows.forEach(r => { if (r.g !== last) { rows += grp(GN[r.g]); last = r.g; }
+      const mk = {}; r.marks.forEach(x => { mk[x.m] = (mk[x.m] ? mk[x.m] + '＋' : '') + x.t; });
+      rows += '<tr><td>' + esc(r.name) + (r.g === 'buy' ? '<span class="sm">' + n0(r.units) + ' ' + W + '</span>' : r.g === 'launch' ? '<span class="sm">' + nn(r.amount) + '</span>' : r.inLow ? '' : '<span class="tg mu">驗證後計入</span>') + '</td>' +
+        ms.map(m => m < r.from || m > r.to ? '<td></td>' : cell((KD[r.g] || (m < r.full ? 'ramp' : 'on')) + (m === r.from ? ' a' : '') + (m === r.to ? ' z' : ''), mk[m])).join('') + '</tr>'; });
+    rows += grp('現金（保守）') + '<tr><td>錢最緊與回本</td>' + ms.map(m => res[m] ? cell('res a z' + (res[m].join() === '回本' ? ' ok' : ''), res[m].join('＋')) : '<td></td>').join('') + '</tr>';
+    h = '<p class="say">第 ' + buys[0].from + ' 個月下訂金，第 ' + buys[0].to + ' 個月第一批到貨，<b>第 ' + G.firstSale + ' 個月開賣</b>。上市準備 ' + G.rows.filter(r => r.g === 'launch').length + ' 件事排在開賣前後做完；' + chs.length + ' 條' + (amz ? '站點與通路' : '通路') + '分 ' + waves.length + ' 波打開。' +
+      (D.lo.advM ? '保守來看第 ' + D.lo.advM + ' 個月錢最緊' + (D.lo.payback ? '、第 ' + D.lo.payback + ' 個月回本。' : '。') : '') + '</p>' +
+      '<div class="tbl"><table class="rp gt"><thead><tr><th>項目</th>' + ms.map(m => '<th' + (m === G.firstSale ? ' class="now"' : '') + '>' + m + ' 月</th>').join('') + '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div class="gkey"><span><i style="background:var(--accent2)"></i>採購：訂金、尾款、到貨</span><span><i style="background:var(--warn)"></i>上市準備</span><span><i style="background:rgba(122,211,160,.45)"></i>開賣後爬坡</span><span><i style="background:var(--good)"></i>賣到上限</span><span><i style="box-shadow:inset 0 0 0 2px var(--bad)"></i>現金的關鍵月份</span></div>';
+  } else if (tk === 'media') {
+    const M = D.media, mm = []; for (let m = 1; m <= M.n; m++) mm.push(m);
+    const KT = { launch: ['wn', '上市一次性'], channel: ['ok', '通路廣告'], mkt: ['in', '行銷'] }, p1 = v => (v * 100).toFixed(1).replace(/\.0$/, '') + '%', ph = m => (M.phases.find(p => m >= p.from && m <= p.to) || {}).name || '', pt = nm => (M.phases.find(p => p.name === nm) || { total: 0 }).total;
+    const span = l => l.from === l.to ? '第 ' + l.from + ' 個月' : '第 ' + l.from + '～' + l.to + ' 個月', cut = M.split.filter(x => !x.own);
+    const qn = v => v < 10 ? String(Math.round(v * 10) / 10) : n0(v), cv = c => !c ? '<td class="l mut">—</td>' : '<td class="l"><b>' + (Math.abs(c.hi - c.lo) < 0.05 ? qn(c.lo) : qn(c.lo) + '～' + qn(c.hi)) + ' ' + esc(c.unit) + '</b></td>';
+    const price = c => { const a = String(c.pu).split('／'); return '每' + esc(a[1] || '') + ' ' + esc(a[0]) + ' ' + qn(c.pl) + '～' + qn(c.ph); };
+    h = '<p class="say">' + M.n + ' 個月的媒體預算合計 <b>' + money(M.total) + '</b>，佔成交金額 ' + p1(M.share) + '。開賣前先花 ' + money(pt('預熱')) + ' 預熱，上市三個月花 ' + money(pt('上市')) + '，之後每個月跟著銷量走。這些預算拆到 <b>' + cut.length + ' 個媒體</b>，每一個都換算成點擊、曝光、名單或幾支影片。通路廣告的 ROAS 是 <b>' + M.roas.toFixed(1) + ' 倍</b>，合計跟損益表對得起來。</p>' +
+      '<h4 class="sub" style="margin-top:4px">每一條預算</h4>' +
+      tb(th([['預算線'], ['類型', 'l'], ['期間', 'l'], ['預算合計'], ['佔媒體預算'], ['帶來的量'], ['每' + W + '廣告費'], ['ROAS']]),
+        M.lines.map(l => '<tr><td>' + esc(l.name) + '</td><td class="l"><span class="tg ' + KT[l.kind][0] + '" style="margin-left:0">' + KT[l.kind][1] + '</span></td><td class="l">' + span(l) + (l.rate ? '<span class="sm">營收的 ' + p1(l.rate) + '</span>' : '') + '</td><td class="num"><b>' + nn(l.total) + '</b></td>' +
+          '<td class="num"><span class="bar ' + (l.kind === 'launch' ? 'y' : 'g') + '" style="width:' + Math.round(70 * l.total / M.total) + 'px"></span>' + p1(l.total / M.total) + '</td>' +
+          (l.units === null ? '<td class="mut">—</td><td class="mut">—</td><td class="mut">—</td>' : '<td class="num">' + nn(l.units) + ' ' + W + '</td><td class="num">' + nn(l.perUnit, 1) + '</td><td class="num">' + l.roas.toFixed(1) + ' 倍</td>') + '</tr>')
+        .concat(['<tr class="sum"><td>合計</td><td></td><td></td><td class="num">' + nn(M.total) + '</td><td class="num">100%</td><td class="num">' + nn(D.hi.sold) + ' ' + W + '</td><td class="num">' + nn(M.perUnit, 1) + '</td><td class="num">' + M.roas.toFixed(1) + ' 倍</td></tr>'])) +
+      '<h4 class="sub">拆到各媒體</h4>' +
+      tb(th([['媒體'], ['拆自哪一條預算', 'l'], ['佔那條預算'], ['預算'], ['佔媒體預算'], ['行情單價', 'l'], ['換算成', 'l']]),
+        M.split.map(x => '<tr' + (x.own ? '' : ' class="md"') + '><td>' + esc(x.media) + '</td><td class="l"><span class="tg ' + KT[x.kind][0] + '" style="margin-left:0">' + esc(x.line) + '</span></td><td class="num">' + p1(x.share) + '</td><td class="num"><b>' + nn(x.total) + '</b></td>' +
+          '<td class="num"><span class="bar p" style="width:' + Math.round(70 * x.total / M.total) + 'px"></span>' + p1(x.total / M.total) + '</td>' + (x.conv ? '<td class="l">' + price(x.conv) + '</td>' : '<td class="l mut">—</td>') + cv(x.conv) + '</tr>')
+        .concat(['<tr class="sum"><td>合計</td><td></td><td></td><td class="num">' + nn(M.total) + '</td><td class="num">100%</td><td></td><td></td></tr>'])) +
+      '<h4 class="sub">每個媒體的逐月預算</h4>' +
+      tb('<thead><tr><th>媒體</th>' + mm.map(m => '<th>' + m + ' 月' + (ph(m) && ph(m) !== ph(m - 1) ? '<br>' + ph(m) : '') + '</th>').join('') + '<th>合計</th></tr></thead>',
+        M.byMedia.map(l => '<tr><td>' + esc(l.media) + '</td>' + mm.map(m => l.monthly[m - 1] > 0.5 ? '<td class="num">' + nn(l.monthly[m - 1]) + '</td>' : '<td class="mut">—</td>').join('') + '<td class="num"><b>' + nn(l.total) + '</b></td></tr>')
+        .concat(['<tr class="sum"><td>每月合計</td>' + mm.map(m => '<td class="num">' + nn(M.monthly[m - 1]) + '</td>').join('') + '<td class="num">' + nn(M.total) + '</td></tr>']));
+  } else if (tk === 'ch') {
+    const bad = D.channels.filter(c => c.hiTotal < 0), off = D.channels.filter(c => !c.inLow), tot = k => D.channels.reduce((a, c) => a + (k.indexOf('lo') === 0 && !c.inLow ? 0 : c[k]), 0);
+    h = '<p class="say">' + (bad.length ? '<b>' + esc(bad.map(c => c.name).join('、')) + '</b>每' + W + '看起來有賺 ' + nn(bad[0].hiGm, 1) + '，但扣掉這段期間的固定費用合計 ' + nn(bad[0].hiFee) + ' 之後，整條是賠的。' : '每條通路都有賺。') +
+      (off.length ? '保守情況只算已經有銷售數據的通路；' + esc(off.map(c => c.name).join('、')) + '等數據到了再計入。' : '') + '</p>' +
+      tb('<thead><tr><th rowspan="2">通路</th><th rowspan="2" class="l">量的證據</th><th colspan="3" class="grp">樂觀</th><th colspan="3" class="grp">保守（成本取高）</th></tr><tr><th class="bl">賣出</th><th>每' + W + '毛利</th><th>整條貢獻</th><th class="bl">賣出</th><th>每' + W + '毛利</th><th>整條貢獻</th></tr></thead>',
+        D.channels.map(c => '<tr><td>' + esc(c.name) + (c.hiTotal < 0 ? '<span class="tg no">其實在賠</span>' : '') + '</td><td class="l"><span class="tg ' + (c.grade === 'A' ? 'ok' : c.grade === 'B' ? 'wn' : 'mu') + '" style="margin-left:0">' + (c.grade === '無' ? '待驗證' : c.grade + ' 級') + '</span></td>' +
+          '<td class="bl num">' + nn(c.hiUnits) + '</td><td class="num">' + nn(c.hiGm, 1) + '</td><td class="num"' + sg(c.hiTotal) + '><b' + sg(c.hiTotal) + '>' + nn(c.hiTotal) + '</b></td>' +
+          (c.inLow ? '<td class="bl num">' + nn(c.loUnits) + '</td><td class="num">' + nn(c.loGm, 1) + '</td><td class="num"><b>' + nn(c.loTotal) + '</b></td>' : '<td class="bl mut">驗證後計入</td><td class="num mut">' + nn(c.loGm, 1) + '</td><td class="mut">—</td>') + '</tr>')
+        .concat(['<tr class="sum"><td>合計</td><td></td><td class="bl num">' + nn(tot('hiUnits')) + '</td><td></td><td class="num">' + nn(tot('hiTotal')) + '</td><td class="bl num">' + nn(tot('loUnits')) + '</td><td></td><td class="num">' + nn(tot('loTotal')) + '</td></tr>']));
+  } else if (tk === 'cash') {
+    const C = D.cash, ys = C.map(x => x.cum).concat(C.map(x => x.cumHi === null ? x.cum : x.cumHi)), lo = Math.min.apply(null, ys.concat([0])), hi = Math.max.apply(null, ys.concat([0])), X0 = 46, X1 = 628, Y0 = 16, Y1 = 196;
+    const px = i => X0 + (X1 - X0) * i / (C.length - 1), py = v => Y1 - (Y1 - Y0) * (v - lo) / (hi - lo || 1), line = k => C.filter(x => x[k] !== null).map((x, i) => (i ? 'L' : 'M') + px(i).toFixed(1) + ' ' + py(x[k]).toFixed(1)).join(' ');
+    const dots = (k, col, nm) => C.map((x, i) => x[k] === null ? '' : '<circle cx="' + px(i).toFixed(1) + '" cy="' + py(x[k]).toFixed(1) + '" r="3.2" fill="' + col + '"><title>第 ' + x.m + ' 個月｜' + nm + '累計 ' + money(x[k]) + '</title></circle>').join('');
+    const ti = C.findIndex(x => x.m === D.lo.advM), pi = C.findIndex(x => x.m === D.lo.payback);
+    h = '<p class="say">保守來看，錢最緊的是<b>第 ' + D.lo.advM + ' 個月，要先墊 ' + money(D.lo.adv) + '</b>；' + (D.lo.payback ? '第 ' + D.lo.payback + ' 個月才回本。' : '看的這段期間回不了本。') + '樂觀' + (D.hi.payback ? '是第 ' + D.hi.payback + ' 個月回本。' : '也回不了本。') + '</p>' +
+      '<div class="chart"><div class="lg"><span><i style="background:var(--accent2)"></i>樂觀的累計現金</span><span><i style="background:var(--txt)"></i>保守的累計現金</span></div>' +
+      '<svg viewBox="0 0 640 224" role="img" aria-label="累計現金：保守第 ' + D.lo.advM + ' 個月墊最多"><line x1="' + X0 + '" x2="' + X1 + '" y1="' + py(0).toFixed(1) + '" y2="' + py(0).toFixed(1) + '" stroke="#7d8486" stroke-dasharray="4 4"/>' +
+      '<text x="' + (X0 - 6) + '" y="' + (py(0) + 4).toFixed(1) + '" text-anchor="end" font-size="11" fill="#a3a8a8">0</text><text x="' + (X0 - 6) + '" y="' + (py(lo) + 4).toFixed(1) + '" text-anchor="end" font-size="11" fill="#a3a8a8">' + (amz ? n0(lo) : (lo / 10000).toFixed(0) + ' 萬') + '</text><text x="' + (X0 - 6) + '" y="' + (py(hi) + 4).toFixed(1) + '" text-anchor="end" font-size="11" fill="#a3a8a8">' + (amz ? n0(hi) : (hi / 10000).toFixed(0) + ' 萬') + '</text>' +
+      C.map((x, i) => i % 2 ? '' : '<text x="' + px(i).toFixed(1) + '" y="216" text-anchor="middle" font-size="11" fill="#a3a8a8">' + x.m + ' 月</text>').join('') +
+      '<path d="' + line('cumHi') + '" fill="none" stroke="#fb9483" stroke-width="2.5" stroke-linejoin="round"/><path d="' + line('cum') + '" fill="none" stroke="#fffaf4" stroke-width="2.5" stroke-linejoin="round"/>' + dots('cumHi', '#fb9483', '樂觀') + dots('cum', '#fffaf4', '保守') +
+      (ti >= 0 ? '<circle cx="' + px(ti).toFixed(1) + '" cy="' + py(C[ti].cum).toFixed(1) + '" r="6.5" fill="none" stroke="#ff6b7d" stroke-width="2"/><text x="' + (px(ti) + 10).toFixed(1) + '" y="' + (py(C[ti].cum) - 12).toFixed(1) + '" font-size="12" font-weight="700" fill="#ff6b7d">墊最多</text>' : '') +
+      (pi >= 0 ? '<circle cx="' + px(pi).toFixed(1) + '" cy="' + py(C[pi].cum).toFixed(1) + '" r="6.5" fill="none" stroke="#7ad3a0" stroke-width="2"/><text x="' + (px(pi) - 10).toFixed(1) + '" y="' + (py(C[pi].cum) - 9).toFixed(1) + '" text-anchor="end" font-size="12" font-weight="700" fill="#7ad3a0">回本</text>' : '') + '</svg></div>' +
+      tb(th([['月'], ['賣出（' + W + '）'], ['付貨款'], ['付上市費用'], ['付稅、廣告與倉儲'], ['收到回款'], ['當月淨額'], ['累計現金']]),
+        C.map(x => '<tr' + (x.m === D.lo.advM || x.m === D.lo.payback ? ' class="key"' : '') + '><td>第 ' + x.m + ' 個月' + (x.arrive ? '<span class="tg in">到貨 ' + n0(x.arrive) + '</span>' : '') + (x.m === D.lo.advM ? '<span class="tg no">墊最多</span>' : '') + (x.m === D.lo.payback ? '<span class="tg ok">回本</span>' : '') + '</td><td class="num">' + nn(x.sold) + '</td><td class="num">' + nn(x.goods) + '</td><td class="num">' + nn(x.fixed) + '</td><td class="num">' + nn(x.other) + '</td><td class="num">' + nn(x.inflow) + '</td><td class="num"' + sg(x.net) + '>' + nn(x.net) + '</td><td class="num"' + sg(x.cum) + '><b' + sg(x.cum) + '>' + nn(x.cum) + '</b></td></tr>'));
+  } else if (tk === 'buy') {
+    const B = D.batches, mx = Math.max.apply(null, B.map(b => b.adv));
+    h = '<p class="say">一次買滿要先墊 <b>' + money(B[0].adv) + '</b>，分三批只要 <b>' + money(B[1].adv) + '</b>，少墊 ' + money(B[0].adv - B[1].adv) + '。只買第一批最壞的情況還賺 ' + money(B[2].loOp) + '、貨不會剩，但賣完就沒貨可賣。</p>' +
+      tb(th([['怎麼買'], ['進貨量'], ['最多先墊'], ['保守能賺'], ['保守剩貨'], ['保守幾月回本']]),
+        B.map((b, i) => '<tr' + (i === 1 ? ' class="key"' : '') + '><td>' + esc(b.name) + '<div class="mut" style="font-weight:400;font-size:12px">' + esc(b.note) + '</div></td><td class="num">' + nn(b.units) + ' ' + W + '</td><td class="num"><span class="bar y" style="width:' + Math.round(70 * b.adv / mx) + 'px"></span>' + money(b.adv) + '</td><td class="num"' + sg(b.loOp) + '>' + money(b.loOp) + '</td><td class="num">' + (b.loUnsold ? '<span style="color:var(--warn)">' + nn(b.loUnsold) + ' ' + W + '</span>' : '0') + '</td><td class="num">' + (b.payback ? '第 ' + b.payback + ' 個月' : '回不了本') + '</td></tr>'));
+  } else if (tk === 'risk') {
+    const K = D.risks, mo = Math.max.apply(null, K.map(x => Math.abs(x.dOp)).concat([1])), ma = Math.max.apply(null, K.map(x => Math.abs(x.dAdv)).concat([1]));
+    h = '<p class="say">最該先確認的是<b>' + esc(K[0].label) + '</b>：' + esc(K[0].change) + '，保守的利潤就少 ' + money(-K[0].dOp) + '。排在後面的數字，錯了影響小很多。</p>' +
+      tb(th([['排名'], ['哪個數字', 'l'], ['往壞的方向動', 'l'], ['保守利潤少多少'], ['要多墊多少']]),
+        K.map((x, i) => '<tr' + (i === 0 ? ' class="key"' : '') + '><td>' + (i + 1) + '</td><td class="l">' + esc(x.label) + '</td><td class="l">' + esc(x.change) + '</td><td class="num">' + (x.dOp < 0 ? '<span class="bar r" style="width:' + Math.round(80 * Math.abs(x.dOp) / mo) + 'px"></span>' + money(-x.dOp) : '<span class="mut">不影響</span>') + '</td><td class="num">' + (x.dAdv > 0.5 ? '<span class="bar y" style="width:' + Math.round(60 * x.dAdv / ma) + 'px"></span>' + money(x.dAdv) : '<span class="mut">不用</span>') + '</td></tr>'));
+  } else if (tk === 'trust') {
+    const T = D.trust, none = T.filter(t => t.grade === '無').length;
+    h = '<p class="say">' + T.length + ' 個關鍵數字裡，<b>' + (T.length - none) + ' 個已經有來源</b>' + (none ? '，' + none + ' 個排在上市前驗證。「保守能賺 ' + money(D.lo.op) + '」只用已經有來源的數字；樂觀多出來的那一段，等這 ' + none + ' 個驗證完就確定。' : '。') + '</p>' +
+      tb(th([['數字'], ['從哪來', 'l'], ['可信度', 'l']]), T.map(t => '<tr><td>' + esc(t.item) + '</td><td class="l w">' + esc(t.source) + '</td><td class="l"><span class="tg ' + (t.grade === 'A' ? 'ok' : t.grade === 'B' ? 'wn' : 'mu') + '" style="margin-left:0">' + (t.grade === 'A' ? 'A　有文件' : t.grade === 'B' ? 'B　由數據換算' : '上市前驗證') + '</span></td></tr>'));
+  } else {
+    const G = D.gates, fail = G.filter(g => !g.loPass);
+    h = '<p class="say">' + G.length + ' 條標準在下單前先訂好，再拿結果來對。保守情況' + (fail.length ? '有 <b>' + fail.length + ' 條沒過：' + esc(fail.map(g => g.name).join('、')) + '</b>。' : '全部過。') + '</p>' +
+      tb(th([['下單前訂好的標準'], ['要求', 'l'], ['保守', 'l'], ['樂觀', 'l']]), G.map(g => '<tr><td>' + esc(g.name) + '</td><td class="l">' + esc(g.need) + '</td><td class="l">' + esc(g.lo) + '<span class="tg ' + (g.loPass ? 'ok">過' : 'no">沒過') + '</span></td><td class="l">' + esc(g.hi) + '<span class="tg ' + (g.hiPass ? 'ok">過' : 'no">沒過') + '</span></td></tr>')) +
+      '<div style="height:12px"></div>' +
+      tb(th([['檢查表'], ['狀態', 'l'], ['現況', 'l']]), D.checks.map(c => '<tr><td>' + esc(c.name) + '</td><td class="l"><span class="tg ' + (c.state === 'pass' ? 'ok' : c.state === 'warn' ? 'wn' : 'mu') + '" style="margin-left:0">' + esc(c.label) + '</span></td><td class="l w">' + esc(c.actual) + '</td></tr>'));
+  }
+  $('sp-body').innerHTML = h;
+}
+function setMode(m) { mode = m; $('m-tw').setAttribute('aria-pressed', m === 'tw'); $('m-amz').setAttribute('aria-pressed', m === 'amz'); buildForm(); buildLocks(); render(); renderSample(); }
+
+const lockOf = i => { const x = LOCKS[i]; return x && mode === 'amz' && x.amz ? Object.assign({}, x, x.amz) : x; };
+function buildLocks() { $('locks').innerHTML = LOCKS.map((_, i) => lockOf(i)).map((x, i) => '<button type="button" class="lock" data-lock="' + i + '"><div class="pv' + (x.pv === 'rows' ? ' rows' : x.pv === 'gt' ? ' rows gt' : x.pv === 'line' ? ' line' : '') + '" aria-hidden="true">' +
+  (x.pv === 'line' ? '<svg viewBox="0 0 200 70" preserveAspectRatio="none"><path d="M0 20 L25 44 L50 58 L75 52 L100 40 L125 30 L150 22 L175 12 L200 6" fill="none" stroke="#fb9483" stroke-width="4"/><path d="M0 26 L25 50 L50 64 L75 62 L100 56 L125 50 L150 46 L175 40 L200 36" fill="none" stroke="#c6c0b9" stroke-width="3"/></svg>'
+    : x.pv === 'gt' ? x.g.map(g => '<b style="margin-left:' + g[0] + '%;width:' + g[1] + '%"></b>').join('')
+    : x.h.map(h => '<b style="' + (x.pv === 'rows' ? 'width:' : 'height:') + h + '%"></b>').join('')) +
+  '</div><span class="badge">🔒 完整版</span><h3>' + esc(x.t) + '</h3><p>' + esc(x.p) + '</p></button>').join(''); }
+$('cmp').innerHTML = COMPARE.map(r => '<tr><td>' + esc(r[0]) + '</td><td class="' + (r[1] ? 'yes">✓' : 'no">—') + '</td><td class="' + (r[2] ? 'yes">✓' : 'no">—') + '</td></tr>').join('');
+
+/* 預約連結只接受 http(s) 開頭的網址 */
+const lineId = () => /^@?[\w.-]{2,30}$/.test(CFG.line) ? (CFG.line.charAt(0) === '@' ? CFG.line : '@' + CFG.line) : '';
+const contactLink = () => /^https?:\/\//i.test(CFG.contact) ? CFG.contact : lineId() ? LINE_OA_ADD + encodeURIComponent(lineId()) : '';
+const ownerView = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);   /* 自己在電腦上開的時候 */
+function wireContact() { const u = contactLink(); ['cta-main', 'cta-float', 'cta-dlg'].forEach(id => { const a = $(id); if (u) { a.href = u; a.target = '_blank'; a.rel = 'noopener'; } else { a.href = '#contact'; a.removeAttribute('target'); } }); $('todo').hidden = !!u || !ownerView; }
+wireContact();
+
+/* ---- 帶走我的結果：一條帶著這組數字的連結（附 QR），可以傳到 LINE、分享、複製，或直接傳給優曝 ---- */
+const pageBase = () => /^https?:\/\//i.test(CFG.page) ? CFG.page : location.href.split(/[?#]/)[0];
+/* 放在 claude.ai 預覽連結時，連結只帶人到工具、數字寫在文字裡；放在自己的網域時，連結會帶著數字與活動代號 */
+const carries = () => !/^https?:\/\/([\w-]+\.)?claude\.ai\//i.test(pageBase());
+const shareLink = () => carries() ? pageBase() + (SRC ? '?s=' + encodeURIComponent(SRC) : '') + '#r=' + liteEncode(mode, vals[mode]) : pageBase();
+/* 掃了打開這個頁面的 QR：要有公開網址才顯示（本機的檔案掃了也打不開） */
+const scanLink = () => /^https?:\/\//i.test(pageBase()) ? pageBase() + (carries() && SRC ? '?s=' + encodeURIComponent(SRC) : '') : '';
+function renderScan() { const u = scanLink(), q = u ? liteQR(u) : null, svg = q ? qrSvg(q, '打開這個頁面的 QR 碼') : '', short = u.replace(/^https?:\/\//i, '');
+  ['scan', 'scan2', 'big'].forEach(id => { const el = $(id); if (id !== 'big') el.hidden = !q; el.querySelector('.qr').innerHTML = svg; el.querySelector('code').textContent = short; }); }
+renderScan();
+const takeText = () => summary() + '\n' + shareLink();
+function qrSvg(q, label) { const m = 4, n = q.size + m * 2; let d = ''; q.rows.forEach((row, y) => row.forEach((v, x) => { if (v) d += 'M' + (x + m) + ' ' + (y + m) + 'h1v1h-1z'; }));
+  return '<svg viewBox="0 0 ' + n + ' ' + n + '" role="img" aria-label="' + (label || '你的結果連結的 QR 碼') + '" shape-rendering="crispEdges"><rect width="' + n + '" height="' + n + '" fill="#fff"/><path d="' + d + '" fill="#111"/></svg>'; }
+function copyText(text, msg) { const done = () => toast(msg), fail = () => { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('複製不了，請長按連結自己複製'); } ta.remove(); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail); else fail(); }
+function openTake() { const url = shareLink(), q = liteQR(url), text = takeText(), oa = lineId(), send = $('tk-send'), u = contactLink();
+  $('tk-url').value = url; $('tk-qr').innerHTML = q ? qrSvg(q) : ''; $('tk-qr').hidden = !q;
+  $('tk-p').textContent = carries() ? '用手機掃這個 QR，或把連結傳出去。打開就是你這組數字，可以接著改。' : '用手機掃這個 QR 打開工具，或把結果傳出去。你這組數字都寫在文字結果裡。';
+  $('tk-line').href = LINE_SHARE + encodeURIComponent(text);
+  if (oa) { send.href = LINE_OA_MSG + encodeURIComponent(oa) + '/?' + encodeURIComponent(text); send.target = '_blank'; send.rel = 'noopener'; send.textContent = '傳到優曝的 LINE，約時間細算'; }
+  else { send.href = u || '#contact'; if (u) { send.target = '_blank'; send.rel = 'noopener'; } else send.removeAttribute('target'); send.textContent = '傳給優曝，約時間細算'; }
+  $('tk-share').hidden = !navigator.share; $('tk').hidden = false; $('tk-x').focus(); }
+function closeTake() { $('tk').hidden = true; }
+
+function openLock(i) { const x = lockOf(i); if (!x) return; lockAt = i; $('dlg-t').textContent = x.t; $('dlg-p').textContent = x.p + '這一塊要用你的報價單與通路條件實際算，在完整版裡。'; $('dlg').hidden = false; $('dlg-x').focus(); }
+function closeLock() { $('dlg').hidden = true; }
+function toast(t) { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true; }, 2200); }
+function summary() { const v = vals[mode], R = liteScore(mode, v), W = unitW(), sel = FIELDS[mode].find(f => f.sel), opt = sel.sel.find(o => o[0] === v[sel.k]);
+  return ['【新品上市體檢】' + (mode === 'amz' ? '亞馬遜 FBA' : '台灣通路'),
+    '售價 ' + money(v.price, 1) + '｜成本 ' + money(v.cost, 1) + '｜第一批 ' + n0(v.qty) + ' ' + W + '｜每月 ' + n0(v.monthly) + ' ' + W + '｜' + (opt ? opt[1] : '') + (mode === 'amz' ? '｜廣告 ' + pc(v.adPct) : '') + '｜上市費用 ' + money(v.launch, 1),
+    '上市分數 ' + R.score + '（' + VERDICT[R.level].tag + '：' + VERDICT[R.level].title + '）',
+    '樂觀能賺 ' + money(R.hi.profit) + '｜保守能賺 ' + money(R.lo.profit) + '｜下單要先拿出 ' + money(R.hi.upfront) + '｜' + (R.hi.payback ? '樂觀第 ' + R.hi.payback + ' 個月回本' : '樂觀回不了本'),
+    (P => '廣告預算 12 個月合計 ' + money(P.hi.adTotal) + '｜第 12 個月底收回投入的 ' + (P.hi.quarters[3].pct === null ? '—' : pc(P.hi.quarters[3].pct)))(litePlan(mode, v)),
+    '我想看完整版。'].concat(SRC ? ['來源：' + SRC] : []).join('\n'); }
+
+document.addEventListener('input', e => { const el = e.target, k = el.dataset && el.dataset.k; if (!k) return; const f = FIELDS[mode].find(x => x.k === k); if (!f) return;
+  if (f.sel) vals[mode][k] = el.value;
+  else { let x = parseFloat(el.value); if (!isFinite(x) || x < 0) return; if (f.pct) x = x / 100; vals[mode][k] = x;
+    document.querySelectorAll('[data-k="' + k + '"]').forEach(o => { if (o !== el) o.value = f.pct ? Math.round(x * 100) : x; }); }
+  render(); });
+document.addEventListener('click', e => { const t = e.target.closest('[data-ex],[data-lock],[data-sp]'); if (!t) return;
+  if (t.dataset.sp !== undefined) { spTab = +t.dataset.sp; renderSample(); return; }
+  if (t.dataset.ex !== undefined) { vals[mode] = Object.assign({}, EXAMPLES[mode][+t.dataset.ex].v); buildForm(); render(); }
+  else openLock(+t.dataset.lock); });
+$('m-tw').addEventListener('click', () => setMode('tw')); $('m-amz').addEventListener('click', () => setMode('amz'));
+$('dlg-x').addEventListener('click', closeLock);
+$('dlg-s').addEventListener('click', () => { closeLock(); spTab = lockAt; renderSample(); $('sample').scrollIntoView({ block: 'start' }); }); $('dlg').addEventListener('click', e => { if (e.target === $('dlg')) closeLock(); });
+$('cta-dlg').addEventListener('click', closeLock);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLock(); closeTake(); $('big').hidden = true; } });
+$('copy').addEventListener('click', openTake); $('take').addEventListener('click', openTake);
+$('cta-main').addEventListener('click', e => { if (!contactLink()) { e.preventDefault(); openTake(); } });
+['scan', 'scan2'].forEach(id => $(id).addEventListener('click', () => { $('big').hidden = false; $('big-x').focus(); }));
+$('big-x').addEventListener('click', () => { $('big').hidden = true; }); $('big').addEventListener('click', e => { if (e.target === $('big')) $('big').hidden = true; });
+$('tk-x').addEventListener('click', closeTake); $('tk').addEventListener('click', e => { if (e.target === $('tk')) closeTake(); });
+$('tk-copy').addEventListener('click', () => copyText($('tk-url').value, '連結已複製'));
+$('tk-text').addEventListener('click', () => copyText(takeText(), '已複製，貼到哪裡都可以'));
+$('tk-share').addEventListener('click', () => { navigator.share({ title: '新品上市體檢', text: summary(), url: shareLink() }).catch(() => { /* 使用者取消 */ }); });
+$('tk-send').addEventListener('click', () => { if (!lineId()) copyText(takeText(), '結果已複製，貼給我們就可以了'); closeTake(); });
+if (fromLink) setTimeout(() => toast('已經帶入連結裡的那組數字'), 400);
+
+setMode(mode);
+</script>
+</body>
+</html>
