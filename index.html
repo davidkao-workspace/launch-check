@@ -559,7 +559,7 @@ if (typeof module !== 'undefined') module.exports = { LITE, liteUnit, liteComput
 const CONTACT_URL = '';
 /* LINE 官方帳號的 ID（含 @）。填了之後：「傳給優曝」會打開跟官方帳號的對話、把結果帶進輸入框；沒填預約連結時，預約按鈕也會帶到官方帳號 */
 const LINE_OA = '';
-/* 這個頁面公開的網址（放上網站之後填完整網址）。帶走結果的連結與 QR 會用它；留空就用現在打開的網址 */
+/* 這個頁面公開的網址。頁面上的 QR 與帶走結果的連結都指到這裡，不管頁面是在哪裡被打開的（本機、預覽或公開網址）。換網域時改這裡與 tools/lite-site-url.txt */
 const PAGE_URL = 'https://davidkao-workspace.github.io/launch-check/';
 const LINE_SHARE = 'https://line.me/R/share?text=', LINE_OA_MSG = 'https://line.me/R/oaMessage/', LINE_OA_ADD = 'https://line.me/R/ti/p/';
 const CFG = { contact: CONTACT_URL, line: LINE_OA, page: PAGE_URL };
